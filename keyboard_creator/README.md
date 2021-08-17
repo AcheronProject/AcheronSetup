@@ -65,7 +65,7 @@ The PCB files generated contain a myriad of information regarding tolerances, us
 
 This PCB file was generated through the Acheron Setup script, an automated tool to generate design-ready KiCAD schematic and PCB files for keyboard projects; it is offered under a no-liability, as-is clause. Please visit http://github.com/AcheronProject/AcheronSetup for more information.
 
-The files generated are compatible with KiCAD developmental ({dblquote}nightly{dblquote}) versions up to august 16, 2021 version. These files should also be accompanied of a librires folder where the used libraries are added as submodules which last commit should point to the remote's HEAD; please note that the files need such libraries to fully work.
+The files generated are compatible with KiCAD developmental ("nightly") versions up to august 16, 2021 version. These files should also be accompanied of a librires folder where the used libraries are added as submodules which last commit should point to the remote's HEAD; please note that the files need such libraries to fully work.
 
 For requests/issues please submit a issue in the github folder. Do not attempt to contact the developers directly. We ask that bugs/problems be reported through the issues page too.
 
@@ -83,11 +83,11 @@ Keep in mind that these are, after all, minimum values. Always try to stray away
 
 ### Notes on copper pours
 
-Many DIY designers will state that the usage of copper pours is perfeccionism; in some cases, designers will argue that the pours are actually detrimental to the design, while I (gondolindrim) disagree with the former I agree with the latter in some respects. Ground pours are an integral part of digital high-speed signal design; since most (if not all) modern keyboards work under USB communication which uses differential pair topology, a ground copper pour is absolutely needed to ensure proper return currents paths, low ground impedance, EMI resistance, efficiency in ESD protection, protection from overheating, and so on. Particularly in keyboard PCBs, however, the copper pours make the PCBs stiffer, reducing what is known as {dblquote}flex{dblquote}. The way to countermeasure that is by deploying flex cuts (also known as relief cuts) or leaf-spring mounting points. Use copper pours are your discretion but I (Gondolindrim) recommend always using them. My designs make liberal use of such pours even for other signals.
+Many DIY designers will state that the usage of copper pours is perfeccionism; in some cases, designers will argue that the pours are actually detrimental to the design, while I (gondolindrim) disagree with the former I agree with the latter in some respects. Ground pours are an integral part of digital high-speed signal design; since most (if not all) modern keyboards work under USB communication which uses differential pair topology, a ground copper pour is absolutely needed to ensure proper return currents paths, low ground impedance, EMI resistance, efficiency in ESD protection, protection from overheating, and so on. Particularly in keyboard PCBs, however, the copper pours make the PCBs stiffer, reducing what is known as "flex". The way to countermeasure that is by deploying flex cuts (also known as relief cuts) or leaf-spring mounting points. Use copper pours are your discretion but I (Gondolindrim) recommend always using them. My designs make liberal use of such pours even for other signals.
 
 ### Used tolerances
 
-**IMPORTANT!** : The values and observations here listed consider a two-layer, 1 oz/ft2 PCB setting. A change in these parameters (layers and copper weight) will unequivocaly change the minimum values. DO NOT use these values in other settings; always coordinate properly with the factory for that. All values are given in milimeters.
+**IMPORTANT!** : The values and observations here listed consider a two-layer, 1 oz/ft² copper weight PCB setting. A change in these parameters (layers and copper weight) will unequivocably change the minimum values. DO NOT use these values in other settings; always coordinate properly with the factory for that. All values are given in milimeters.
 
 - **Factory minimums**
  - **Track width**: 0.15
@@ -125,7 +125,7 @@ Many DIY designers will state that the usage of copper pours is perfeccionism; i
 
 Observations:
 
-- [1] Official copper-copper clearances are 0.2mm but not exactly {dblquote}all copper{dblquote}. Pad-to-pad minimums are 0.5mm in the case of THT pads and 0.2mm for SMD pads.
+- [1] Official copper-copper clearances are 0.2mm but not exactly "all copper". Pad-to-pad minimums are 0.5mm in the case of THT pads and 0.2mm for SMD pads.
 - [2] The recommended ratio between silkscreen character height and its trace width so they are clearly legible.
 - [3] The hole-to-copper clearance changes on occasion. For instance, via-to-track and NPTH-to-track clearance is 0.25mm but PTH-to-track is 0.3.
 - [4] The distance of copper-to-edge is a big problem for fabs in designs where traces need to be close to certain slots or the edges, like keyboard PCBs with flex cuts where the PCB traces need to be routed close to the flex cuts for lack of real-estate. This is why this value is much higer than the fabrication ones.
