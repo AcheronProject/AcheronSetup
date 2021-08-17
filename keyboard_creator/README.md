@@ -90,38 +90,38 @@ Many DIY designers will state that the usage of copper pours is perfeccionism; i
 **IMPORTANT!** : The values and observations here listed consider a two-layer, 1 oz/ft² copper weight PCB setting. A change in these parameters (layers and copper weight) will unequivocably change the minimum values. DO NOT use these values in other settings; always coordinate properly with the factory for that. All values are given in milimeters.
 
 - **Factory minimums**
- - **Track width**: 0.15
- - **Copper clearance**: 0.15 (see [1])
- - **VIA hole**: 0.2
- - **VIA annular width**": 0.13
- - **VIA diameter**: 0.4
- - **Copper-to-hole clearance**: 0.3 (see [3])
- - **Copper-to-edge clearance**: 0.2
- - **Minimum through hole drill**: 0.2
- - **Hole-to-hole clearance**: 0.5
- - **Silkscreen character height**: 0.8
- - **Silkscreen trace width**: 0.15
- - **Silkscreen character height-to-trace ratio**: 1:6
- - **Pad-to-silkscreen clearance**: 0.15
- - **Soldermask expansion**: 0.05
- - **Minimum soldermask bridge**: 0.2
+    - **Track width**: 0.15
+    - **Copper clearance**: 0.15 (see [1])
+    - **VIA hole**: 0.2
+    - **VIA annular width**": 0.13
+    - **VIA diameter**: 0.4
+    - **Copper-to-hole clearance**: 0.3 (see [3])
+    - **Copper-to-edge clearance**: 0.2
+    - **Minimum through hole drill**: 0.2
+    - **Hole-to-hole clearance**: 0.5
+    - **Silkscreen character height**: 0.8
+    - **Silkscreen trace width**: 0.15
+    - **Silkscreen character height-to-trace ratio**: 1:6
+    - **Pad-to-silkscreen clearance**: 0.15
+    - **Soldermask expansion**: 0.05
+    - **Minimum soldermask bridge**: 0.2
 
 - **Recommended minimums**
- - **Track width**: 0.2
- - **Copper clearance**: 0.2 (see [1])
- - **VIA hole**: 0.3
- - **VIA annular width**": 0.15
- - **VIA diameter**: 0.6
- - **Copper-to-hole clearance**: 0.35 (see [3])
- - **Copper-to-edge clearance**: 0.5 (see [4])
- - **Minimum through hole drill**: 0.3
- - **Hole-to-hole clearance**: 0.5
- - **Silkscreen character height**: 1.0
- - **Silkscreen trace width**: 0.2
- - **Silkscreen character height-to-trace ratio**: 1:5
- - **Pad-to-silkscreen clearance**: 0.2
- - **Soldermask expansion**: 0.1
- - **Minimum soldermask bridge**: 0.25
+    - **Track width**: 0.2
+    - **Copper clearance**: 0.2 (see [1])
+    - **VIA hole**: 0.3
+    - **VIA annular width**": 0.15
+    - **VIA diameter**: 0.6
+    - **Copper-to-hole clearance**: 0.35 (see [3])
+    - **Copper-to-edge clearance**: 0.5 (see [4])
+    - **Minimum through hole drill**: 0.3
+    - **Hole-to-hole clearance**: 0.5
+    - **Silkscreen character height**: 1.0
+    - **Silkscreen trace width**: 0.2
+    - **Silkscreen character height-to-trace ratio**: 1:5
+    - **Pad-to-silkscreen clearance**: 0.2
+    - **Soldermask expansion**: 0.1
+    - **Minimum soldermask bridge**: 0.25
 
 Observations:
 
