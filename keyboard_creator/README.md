@@ -71,62 +71,89 @@ For requests/issues please submit a issue in the github folder. Do not attempt t
 
 ### Notes on tolerances
 
-The tolerances used might seem too loose or big, but these are the bare large-scale manufacturable values found through experience using multiple factories. Adjust the values at your own discretion, but be very mindful of these tolerances as they are imperative for the manufacturing process and feasibility of the final PCB.
+The manufacturing tolerances used for PCBs in the Acheron Project are a way to uniformize the design settings of the projects. These settings were obtained using mainly three manufacturers: PCBWay, Elecrow and JLCPCB (see their capabilities pages on references [1-3]). These are big players in the asian PCB manufacturing market and the tolerances practiced by them are accepted industry-wide; hence, the values used here should be enough for most manufacturers.
 
-The values used divide into two groups: the "factory minimum" and the "recommended minimum" ones:
+It must also be kept in mind that, since the Acheron Project is heavily DIY-oriented, the tolerance settings used were the easiest or cheapest available. For instance, Elecrow offers "standard PCB" and "advanced PCB" services ([2]), while PCBWay offers "normal difficulty", "medium difficulty" and "high difficulty" processes ([3]). In both manufacturers, the advanced settings have smaller tolerances and better manufacturing features but are significantly more expensive, specially when paired with PCB assembly services. Such settings are meant for more complex projects (high-speed or analog signal processing, finer electronic components, high-density designs etc) and are completely unnecessary for keyboard projects.
 
-- **"Factory minimums"** are the values minimally feasible needed by factories. Different ones will inevitably have different numbers, but through using multiple a common denominator was found. these values should not be used often, but seldomly at the designer's discretion and in ultimate case. Their use will incurr in higher manufacturing fees, larger lead times, more quality check issues (PCBs failing after large production).
+Therefore, it must always be understood that a single body of uniform tolerances throughout a wide spectrum of projects is unfeasible due to the very nature  and requirements of the different PCB projects. The values suggested here used in these files are only *recommendations* based on experience, having been used in a myriad of projects throughout the Acheron Project and in Gondolindrim's personal and professional projects.
 
-- **"Recommended minimums"** are the smalles tolerances doable with no fabrication or quality control issues. These can be safely used without incurring in higher costs or major large-scale production issues. There is no particular reason for any of these but experience through usage of many factories. This KiCAD file was set to use the recommended values in its Design Rule Checks and routines; these values were used successfully throughout the Acheron Project and are proven to work.
+The tolerances used might seem too loose or big, but these are the bare large-scale manufacturable values found through experience using multiple factories.
 
-Keep in mind that these are, after all, minimum values. Always try to stray away from them when there is chance, so as to give you and the factory headroom to work with. The actually used values can very well vary according to your specifications and the capabilities of the factory being used.
+Adjust the values at your own discretion, but be very mindful of these tolerances as they are imperative for the manufacturing process and feasibility of the final PCB.
+
+The values used divide into two groups: the "factory minimums " and the "recommended minimum" ones.
+
+- "Factory" are the values minimally feasible needed by factories. Different ones will inevitably have different numbers, but through using multiple a common denominator was found. These values should not be used often, but seldomly at the designer's discretion and in ultimate case. Their use will incurr in higher manufacturing fees, larger lead times, more quality check issues (PCBs failing after large production).
+- Recommended are the smalles tolerances doable with no fabrication or quality control issues. These can be safely used without incurring in higher costs or major large-scale production issues. There is no particular reason for any of these but experience through usage of many factories. This KiCAD file was set to use the recommended values in its Design Rule Checks and routines; these values were used successfully throughout the Acheron Project and are proven to work.
+
+Keep in mind that these are, after all, minimum values. Always try to stray away from them when there is chance, so as to give you and the factory headroom to work with. The actually used values can very well vary according to your specifications and the capabilities of the factory being used. For the actual values, check references [1-3].
+
+**TLDR** (you should read it all though)
+- The values used are based on experience but should be manufacturable at low cost and accepted industry-wide
+- Such values *should* be enough for keyboard PCBs
+- Manufacturing parameters might change in which case the tolerance values will change accordingly
+- You can freely change these parameters around but make sure what those changes entail to, cost and production-wise
+- If you are beggining on PCB design or are using a new fab, it might be wise to just use the values here for now
 
 ### Notes on copper pours
 
 Many DIY designers will state that the usage of copper pours is perfeccionism; in some cases, designers will argue that the pours are actually detrimental to the design, while I (gondolindrim) disagree with the former I agree with the latter in some respects. Ground pours are an integral part of digital high-speed signal design; since most (if not all) modern keyboards work under USB communication which uses differential pair topology, a ground copper pour is absolutely needed to ensure proper return currents paths, low ground impedance, EMI resistance, efficiency in ESD protection, protection from overheating, and so on. Particularly in keyboard PCBs, however, the copper pours make the PCBs stiffer, reducing what is known as "flex". The way to countermeasure that is by deploying flex cuts (also known as relief cuts) or leaf-spring mounting points. Use copper pours are your discretion but I (Gondolindrim) recommend always using them. My designs make liberal use of such pours even for other signals.
 
+At the bottom-right of the page there is a copper polygon with the settings generally used for the Acheron Project. The values are tuned for general use, but adjustments can be made. Thermal spoke width and relief gap can be adjusted according to the thermal needs -- for THT components or connectors, it is recommended to use higher gaps (0.5mm will do the trick) to avoid bad solder joints.
+
+Avoid using hatched-pattern copper pours. They have their reason to be, but not on keyboard PCBs. They are ugly (yeah, fight me) and don't do what we want them to do here. Always use solid fills. The drawback is that they can make the PCB stiffer, so use flex cuts on the PCB.
+
 ### Used tolerances
 
-**IMPORTANT!** : The values and observations here listed consider a two-layer, 1 oz/ft² copper weight PCB setting. A change in these parameters (layers and copper weight) will unequivocably change the minimum values. DO NOT use these values in other settings; always coordinate properly with the factory for that. All values are given in milimeters.
+#### IMPORTANT!
+The values and observations here listed consider a two-layer, 1 oz/ft² copper weight PCB setting. A change in these parameters (layers and copper weight) will unequivocably change the minimum values. Values also pertain to the cheapest setting on the referenced manufacturers. Therefore even for a 2-layer 1oz/ft2 PCB tolerances can be different for the "advanced" or "high-difficulty" settings.
 
-- **Factory minimums**
-    - **Track width**: 0.15
-    - **Copper clearance**: 0.15 (see [1])
-    - **VIA hole**: 0.2
-    - **VIA annular width**": 0.13
-    - **VIA diameter**: 0.4
-    - **Copper-to-hole clearance**: 0.3 (see [3])
-    - **Copper-to-edge clearance**: 0.2
-    - **Minimum through hole drill**: 0.2
-    - **Hole-to-hole clearance**: 0.5
-    - **Silkscreen character height**: 0.8
-    - **Silkscreen trace width**: 0.15
-    - **Silkscreen character height-to-trace ratio**: 1:6
-    - **Pad-to-silkscreen clearance**: 0.15
-    - **Soldermask expansion**: 0.05
-    - **Minimum soldermask bridge**: 0.2
+DO NOT use these values in other settings; always coordinate properly with the factory for that. All values are given in milimeters. For clarification, read the NOTES ON TOLERANCES.
 
-- **Recommended minimums**
-    - **Track width**: 0.2
-    - **Copper clearance**: 0.2 (see [1])
-    - **VIA hole**: 0.3
-    - **VIA annular width**": 0.15
-    - **VIA diameter**: 0.6
-    - **Copper-to-hole clearance**: 0.35 (see [3])
-    - **Copper-to-edge clearance**: 0.5 (see [4])
-    - **Minimum through hole drill**: 0.3
-    - **Hole-to-hole clearance**: 0.5
-    - **Silkscreen character height**: 1.0
-    - **Silkscreen trace width**: 0.2
-    - **Silkscreen character height-to-trace ratio**: 1:5
-    - **Pad-to-silkscreen clearance**: 0.2
-    - **Soldermask expansion**: 0.1
-    - **Minimum soldermask bridge**: 0.25
+|	**Tolerance**				|	**Factory minimums**	|	**Recommended minimums**	|
+|	:---					|	:---:			|	:---:				|
+|	**Track width**				|	0.15			|	0.2				|
+| **Copper clearance** (i)			|	0.15			|	0.2				|
+| **VIA hole**					|	0.2			|	0.3				|
+| **VIA annular width**				|	0.13			|	0.15				|
+| **VIA diameter**				|	0.4			|	0.6				|
+| **Copper-to-hole clearance** (iii)		|	0.3			|	0.35				|
+| **Copper-to-edge clearance**			|	0.2			|	0.5				|
+| **Minimum through hole drill**		|	0.2			|	0.3				|
+| **Hole-to-hole clearance**			|	0.5			|	0.5				|
+| **Silkscreen character height**		|	0.8			|	1.0				|
+| **Silkscreen trace width**			|	0.15			|	0.2				|
+| **Silkscreen character height-to-trace ratio**|	1:6			|	1:5				|
+| **Pad-to-silkscreen clearance**		|	0.15			|	0.2				|
+| **Soldermask expansion**			|	0.05			|	0.1				|
+| **Minimum soldermask bridge**			|	0.2			|	0.25				|
 
-Observations:
+*All measurements in mm*.
 
-- [1] Official copper-copper clearances are 0.2mm but not exactly "all copper". Pad-to-pad minimums are 0.5mm in the case of THT pads and 0.2mm for SMD pads.
-- [2] The recommended ratio between silkscreen character height and its trace width so they are clearly legible.
-- [3] The hole-to-copper clearance changes on occasion. For instance, via-to-track and NPTH-to-track clearance is 0.25mm but PTH-to-track is 0.3.
-- [4] The distance of copper-to-edge is a big problem for fabs in designs where traces need to be close to certain slots or the edges, like keyboard PCBs with flex cuts where the PCB traces need to be routed close to the flex cuts for lack of real-estate. This is why this value is much higer than the fabrication ones.
-- [5] The 1:6 ratio for silkscreen is OK for large characters but can become unreadable to the naked eye on a 1mm character. A 1:5 ratio is recommended.
+**Observations:**
+
+- [i] Official copper-copper clearances are 0.2mm but not exactly "all copper". Pad-to-pad minimums are 0.5mm in the case of THT pads and 0.2mm for SMD pads.
+- [ii] The recommended ratio between silkscreen character height and its trace width so they are clearly legible.
+- [iii] The hole-to-copper clearance changes on occasion. For instance, via-to-track and NPTH-to-track clearance is 0.25mm but PTH-to-track is 0.3.
+- [iv] The distance of copper-to-edge is a big problem for fabs in designs where traces need to be close to certain slots or the edges, like keyboard PCBs with flex cuts where the PCB traces need to be routed close to the flex cuts for lack of real-estate. This is why this value is much higer than the fabrication ones.
+- [v] The 1:6 ratio for silkscreen is OK for large characters but can become unreadable to the naked eye on a 1mm character. A 1:5 ratio is recommended.
+
+### Overall design recommendations
+
+- The first experience with PCB design is always very frustrating and overwhelming. There will be a lot of failed prototypes before you consider yourself a minimally good PCB designer, and there is always something to learn. Since PCB design is a highly technical and skill-oriented field, it can sometimes looks as some sorte of black magic. Do not stray from resilience. The best way to learn PCB design is designing. Some study in the fundamental aspects of electronics and embedded systems is also recommended, but higher education in maths and engineering is absolutely not needed to be a DIY designer.
+
+- Sharing your design and knowledge is one of the most fruitful and effective ways to learn design and gain knowledge. Look at other people's designs and frequently talk to other designers. This ensures a collective knowledge is achieved both in hard and soft skills.
+
+- PCB design involves a lot of creativity and not everyone understands your codes and conventions. Take good care of documenting your PCB. Some tips:
+	- (1) Make liberal use of the F.Fab and B.Fab layers. Those should be used for documentation which you want to relay to your fab house. Component pinage and polarity, values, designators, everything goes to make the fab's job easier -- and yours in the process. 
+	- (2) Treat the silkscreen layers with very good care. Make sure that the component designators are minimally sized (1mm tall with 0.2mm trace width is advised), visible. Also make sure that the silkscreen indicates the polarity of components either through arrows or symbols. Remember that the physical PCB does not accompany its files; when someone looks at the PCB, component designators and polarities should be very clear and direct.
+	- (3) KiCAD allows custom user layers. Use those to indicate screw hole anchors/sizes, plate markings, stabilizer orientation. Document everything because in the eventuality you want to make a revision or correction, all the information is in the files and not somewhere else buried deep down in emails or Discord chats.
+	- (4) If you want to share or open-source your design, be kind and make sure all your thought process or ideas are clearly documented and defined. Revising a PCB, much like a computer code or a maths test, requires knowledge that is either a convention or only the author knows.
+	- (5) Yes, documenting is boring. Everyone knows that, and yet everyone takes the time to do it because it saves you time and headaches down the line.
+
+- Even though keyboard PCB design is very forgiving in terms of the mistakes and errors you can make, there are some problems that are potentially PCB-breaking. The most common problems for first-timers in keyboard PCB design are (1) USB data traces routing (2) crystal traces routing and (3) bypass capacitors placement and routing. In this order, they are the most problematic parts of designing a keyboard PCB and are the most frequent issues.
+	- **(1) USB DATA TRACES:** make sure to route them as short as possible, parallel to one another. Also learn to use the phase skew adjustment tool of KiCAD. Avoid breaking and VIA'ing them as much as possible. If those are needed, do so in a simmetrical manner. If also possible, please read on differential pair  communication (see [4], pages 331-344).
+	- **(2) CRYSTAL TRACES:** these are the highest frequency traces on the PCB and should be handled with extreme care. Always place the crystal extremely close to the MCU (in its vicinities) and if possible sharing the same ground (ideally islanded).
+	- **(3) BYPASS CAPACITORS:** the precise function and nature of bypass (also called decoupling) capacitors is difficult to explain without higher knowledge in maths and engineering. In layman's terms, bypass capacitors are placed to mitigate noise inherently present in digital circuits due to the natural inductance of traces and the switching characteristic of digital circuitry. Failure to properly place and route these capacitors can lead to inability of the digital circuits to work properly. In the specific case of keyboard PCBs, there are plenty of digital circuits that need decoupling, mainly the microcontroller, RGB underglow LEDs and level shifters. Treat bypass capacitors like you would a crystal: as close to the main device as possible and with short traces. Always look at datasheets, reference manuals and application notes which will generally inform how many capacitors are needed and their respective values and sizes.
+
+
