@@ -156,4 +156,9 @@ DO NOT use these values in other settings; always coordinate properly with the f
 	- **(2) CRYSTAL TRACES:** these are the highest frequency traces on the PCB and should be handled with extreme care. Always place the crystal extremely close to the MCU (in its vicinities) and if possible sharing the same ground (ideally islanded).
 	- **(3) BYPASS CAPACITORS:** the precise function and nature of bypass (also called decoupling) capacitors is difficult to explain without higher knowledge in maths and engineering. In layman's terms, bypass capacitors are placed to mitigate noise inherently present in digital circuits due to the natural inductance of traces and the switching characteristic of digital circuitry. Failure to properly place and route these capacitors can lead to inability of the digital circuits to work properly. In the specific case of keyboard PCBs, there are plenty of digital circuits that need decoupling, mainly the microcontroller, RGB underglow LEDs and level shifters. Treat bypass capacitors like you would a crystal: as close to the main device as possible and with short traces. Always look at datasheets, reference manuals and application notes which will generally inform how many capacitors are needed and their respective values and sizes.
 
+## References
 
+- [1] PCBWay manufacturing capabilities. Link: <https://www.pcbway.com/capabilities.html>. Last access august 21, 2021.
+- [2] JLCPCB manufacturing capabilities. Link: <https://jlcpcb.com/capabilities/Capabilities>. Last accessed august 21, 2021.
+- [3] Elecrow manufacturing capabilities. Link: <https://www.elecrow.com/download/quote/PCB_Specification_FAQ.pdf> . Last access august 21, 2021.
+- [4] Sanjeeb Mishra, Neeraj Kumar Singh, Vijayakrishnan Rousseau. System on Chip Interfaces for Low Power Design. Morgan Kaufmann, 2016. ISBN 9780128016305. Accessible via https://www.sciencedirect.com/science/article/pii/B9780128016305000104)
