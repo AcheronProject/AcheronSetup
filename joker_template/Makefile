@@ -63,7 +63,7 @@ create:
 		$(MAKE) -s addsubmodule:acheron_3D ; \
 	fi ; \
 	if [ ${CLEANCREATE} == TRUE ] ; then \
-		${TRASH_COMMAND} Makefile blankproject ; \
+		${TRASH_COMMAND} Makefile template ; \
 	fi ; \
 		
 addsymlib%:
@@ -134,9 +134,9 @@ clean%:
 # Adds symbol and footprint library tables
 kicadsetup:
 	@$(MAKE) -s check:kicaddir ; \
-	cat blankproject/blank.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
-	cat blankproject/blank.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
-	cat blankproject/blank.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
-	cat blankproject/blank.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
-	cp blankproject/sym-lib-table ${KICADDIR} ; \
-	cp blankproject/fp-lib-table ${KICADDIR}
+	cat joker_template/joker.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
+	cat joker_template/joker.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
+	cat joker_template/joker.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
+	cat joker_template/joker.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
+	cp joker_template/sym-lib-table ${KICADDIR} ; \
+	cp joker_template/fp-lib-table ${KICADDIR}

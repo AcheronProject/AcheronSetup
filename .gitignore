@@ -1,3 +1,7 @@
 core_files/.git*
 core_files/kicad_files
 core_files/blankproject/blank-backups/
+
+joker_template/template/joker-backups
+joker_template/.git*
+joker_template/kicad_files
