@@ -97,6 +97,7 @@ check%:
 		fi \
 	fi
 
+# Downloads submodule from github
 addsubmodule%:
 	@echo -e "$(BOLD) >> Adding $(MAGENTA)${ARG1}$(WHITE) submodule from $(BLUE)$(BOLD)${ACRNPRJ_REPO}/${ARG1}.git$(RESET) at $(RED)$(BOLD)\"$(KICADDIR)/${LIBDIR}/${ARG1}\"$(RESET) folder... \c" ; \
 	git submodule add ${ACRNPRJ_REPO}/${ARG1}.git ${KICADDIR}/${LIBDIR}/${ARG1} > /dev/null 2>&1; \
@@ -134,9 +135,9 @@ clean%:
 # Adds symbol and footprint library tables
 kicadsetup:
 	@$(MAKE) -s check:kicaddir ; \
-	cat joker_template/joker.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
-	cat joker_template/joker.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
-	cat joker_template/joker.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
-	cat joker_template/joker.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
-	cp joker_template/sym-lib-table ${KICADDIR} ; \
-	cp joker_template/fp-lib-table ${KICADDIR}
+	cat template/joker.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
+	cat template/joker.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
+	cat template/joker.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
+	cat template/joker.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
+	cp template/sym-lib-table ${KICADDIR} ; \
+	cp template/fp-lib-table ${KICADDIR}

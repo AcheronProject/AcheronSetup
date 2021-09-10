@@ -1,5 +1,2 @@
 (fp_lib_table
-  (lib (name "acheron_Hardware")(type "KiCad")(uri "${KIPRJMOD}/libraries/acheron_Hardware.pretty")(options "")(descr "Acheron Project footprint library"))
-  (lib (name "acheron_Connectors")(type "KiCad")(uri "${KIPRJMOD}/libraries/acheron_Connectors.pretty")(options "")(descr "Acheron Project footprint library"))
-  (lib (name "acheron_Components")(type "KiCad")(uri "${KIPRJMOD}/libraries/acheron_Components.pretty")(options "")(descr "Acheron Project footprint library"))
 )
