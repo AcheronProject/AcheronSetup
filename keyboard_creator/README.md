@@ -56,6 +56,9 @@ Additionally, the ```create``` target also admits passing arguments in the comma
 - ```KICADDIR``` and ```LIBDIR```: by default, the makefile will create a ```./kicad_files``` folder with the KiCAD files and library tables; inside this folder, there will be a ```libraries``` folder inside which the libraries will be added as submodules. ```make create KICADDIR=<dir1> LIBDIR=<dir2>``` will override that behavior.
 - ```CLEANCREATE=TRUE``` will delete ```Makefile``` and the ```blankproject```, leaving only the created files and the ```.git``` folder. This argument defaults to false, that is, leaving those files intact after the process.
 - ```3DLIB=TRUE``` will also download the ```acheron_3D``` library with the 3D step files used in the acheron project.
+- ```TEMPLATE=<name>``` will utilize one of the available templates. As of september 2021, there are two templates available:
+    - ```BLANK``` is the *blank* template, that is, a project with blank schematic and PCB layouts;
+    - ```JOKER``` is the multi-STM32-microcontroller design template developed [here](http://acheronproject.com/multimcu_article/multimcu_article/). **BE SURE TO READ THIS DOCUMENTATION**. This template will contain a microcontroller footprint with ancillary components that make the resulting PCB compatible with a myriad of microcontrollers.
 
 ## Design notes
 

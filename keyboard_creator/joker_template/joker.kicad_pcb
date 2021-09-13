@@ -6,10 +6,11 @@
 
   (paper "A3")
   (title_block
-    (title "Noxary X60")
-    (date "2021-08-26")
-    (rev "V1.0.2")
+    (title "Joker template")
+    (date "2021-09-11")
+    (rev "V1.0.0")
     (company "Designed by Gondolindrim")
+    (comment 1 "For the Acheron Project")
   )
 
   (layers

@@ -26,6 +26,13 @@ ifndef 3DLIB
 	3DLIB = TRUE
 endif
 
+# Template supports
+#	"blank", the blank project
+#	"joker", the joker template
+ifndef TEMPLATE
+	TEMPLATE = BLANK
+endif
+
 # ANSI terminal colors (see 'man tput') and
 # https://linuxtidbits.wordpress.com/2008/08/11/output-color-on-bash-scripts/
 # Don't use color if there isn't a $TERM environment variable:
@@ -134,9 +141,19 @@ clean%:
 # Adds symbol and footprint library tables
 kicadsetup:
 	@$(MAKE) -s check:kicaddir ; \
-	cat blankproject/blank.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
-	cat blankproject/blank.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
-	cat blankproject/blank.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
-	cat blankproject/blank.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
-	cp blankproject/sym-lib-table ${KICADDIR} ; \
-	cp blankproject/fp-lib-table ${KICADDIR}
+	if [ ${TEMPLATE} == BLANK ] ; then \
+		cat blank_template/blank.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
+		cat blank_template/blank.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
+		cat blank_template/blank.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
+		cat blank_template/blank.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
+		cp blank_template/sym-lib-table ${KICADDIR} ; \
+		cp blank_template/fp-lib-table ${KICADDIR} ; \
+	fi ; \
+	if [ ${TEMPLATE} == JOKER ] ; then \
+		cat joker_template/joker.kicad_pro > ${KICADDIR}/${PRJNAME}.kicad_pro ; \
+		cat joker_template/joker.kicad_pcb > ${KICADDIR}/${PRJNAME}.kicad_pcb ; \
+		cat joker_template/joker.kicad_prl > ${KICADDIR}/${PRJNAME}.kicad_prl ; \
+		cat joker_template/joker.kicad_sch > ${KICADDIR}/${PRJNAME}.kicad_sch ; \
+		cp joker_template/sym-lib-table ${KICADDIR} ; \
+		cp joker_template/fp-lib-table ${KICADDIR} ; \
+	fi
