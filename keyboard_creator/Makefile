@@ -70,7 +70,7 @@ create:
 		$(MAKE) -s addsubmodule:acheron_3D ; \
 	fi ; \
 	if [ ${CLEANCREATE} == TRUE ] ; then \
-		${TRASH_COMMAND} Makefile blankproject ; \
+		${TRASH_COMMAND} Makefile blank_template joker_template ; \
 	fi ; \
 		
 addsymlib%:
