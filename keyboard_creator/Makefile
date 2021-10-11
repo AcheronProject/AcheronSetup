@@ -76,13 +76,13 @@ create:
 addsymlib%:
 	@$(MAKE) -s addsubmodule:${ARG1} ; \
 	echo -e "$(BOLD) >> Adding ${ARG1} symbol library to KiCAD library table... \c" ; \
-	sed -i "2 i (lib (name \"${ARG1}\")(type \"KiCad\")(uri \"$$\{KIPRJMOD\}/${LIBDIR}/${ARG1}/${ARG1}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\")) " ${KICADDIR}/sym-lib-table > /dev/null ; \
+	perl -pi -e 'print "(lib (name \"${ARG1}\")(type \"KiCad\")(uri \"\$${KIPRJMOD}/${LIBDIR}/${ARG1}/${ARG1}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))\n" if $$. == 2' ${KICADDIR}/sym-lib-table ; \
 	echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 addfootprintlib%:
 	@$(MAKE) -s addsubmodule:${ARG1}.pretty ; \
 	echo -e "$(BOLD) >> Adding ${ARG1} footprint library to KiCAD library table... \c" ; \
-	sed -i "2 i (lib (name \"${ARG1}\")(type \"KiCad\")(uri \"$$\{KIPRJMOD\}/${LIBDIR}/${ARG1}.pretty\")(options \"\")(descr \"Acheron Project footprint library\")) " ${KICADDIR}/fp-lib-table > /dev/null ; \
+	perl -pi -e 'print "(lib (name \"${ARG1}\")(type \"KiCad\")(uri \"\$${KIPRJMOD}/${LIBDIR}/${ARG1}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))\n" if $$. == 2' ${KICADDIR}/fp-lib-table > /dev/null ; \
 	echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	
 # check:libdir checks if the KICADDIR/LIBDIR exists. If not, creates it with the parent KICADDIR if it doesnt exist.
