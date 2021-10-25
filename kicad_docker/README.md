@@ -32,6 +32,10 @@ To monitor the container one can use ``docker stats``. I recommend
 
 Which lists all containers and their CPU percentage and memory usage.
 
+## Multiple compile threads
+
+The ```make``` tool can use multiple threads/cores for the process, making it much faster. In order to achieve this, the command can use the ``-jX`` flag , where X is the number of threads to be used. If you want to use this feature, uncomment the last line of the Dockerfile and comment the second-to-last one. You can also edit the ``-j`` flag for how many threads you want (it's using 4 by default).
+
 ## Notes
 
 The building process is quite CPU and memory intensive, so if you don't want it to overtake your CPU and RAM you might want to limit the container's CPU and memory usage.
