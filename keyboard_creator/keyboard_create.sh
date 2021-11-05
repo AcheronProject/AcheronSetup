@@ -20,6 +20,7 @@ TRASH_COMMAND='gio trash'
 #}}}1
 
 # Usage function ------------------------------------------------------------------------------ {{{1
+# This function displays the usage section of the code/
 function usage() {
 	echo "${BOLD}ACHERON PROJECT KEYBOARD CREATOR TOOL ${RESET}
 ${BOLD}Created by:${RESET} Álvaro "Gondolindrim" Volpato
@@ -42,11 +43,11 @@ ${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
 	${BOLD}[-kd, --kicaddir]${RESET}	Chooses the project parent folder name ${BOLD}${GREEN}('kicad_files')${RESET}
 	${BOLD}[-ld, --libdir]${RESET}		Chooses the folder inside KICADDIR where libraries and submodules are added. ${BOLD}${GREEN}('libraries')${RESET}
 	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD} Options are:
-						${GREEN}-> 'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
+						${GREEN}- 'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
 						- 'MX_soldermask' for MX support with covered front switches (https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
 						- 'MXA' for MX and Alps suport (https://github.com/AcheronProject/acheron_MXA.pretty)
 						- 'MXH' for MX hostwap (https://github.com/AcheronProject/acheron_MXH.pretty)
-"
+${RESET}"
 }
 # }}}1
 
@@ -236,9 +237,11 @@ kicad_setup() {
 
 #}}}1
 
+# git "add" functions ----------------------- {{{1
+# The add_submodule function does exactly that: adds a git submodule to the submodules page. The other two functions, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
 add_submodule() {
 	if [ -z "$1" ] ; then
-		echo "${RED}${BOLD} >> ERROR${WHITE} on function add)submodule():${RESET} no argument passed."
+		echo "${RED}${BOLD} >> ERROR${WHITE} on function add_submodule():${RESET} no argument passed."
 		return 0
 	fi
 	local TARGET_SUBMODULE="$1" 
@@ -260,6 +263,7 @@ add_footprintlib(){
 	sed -i "2 i (lib (name \"${1}\")(type \"KiCad\")(uri \"\{KIPRJMOD\}/${LIBDIR}/${1}.pretty\")(options \"\")(descr \"Acheron Project footprint library\")) " ${KICADDIR}/fp-lib-table > /dev/null
 	echo "${BOLD}${GREEN}Done.${RESET}"
 }
+#}}}1
 
 # MAIN FUNCTION ----------------------------- {{{1
 main(){
@@ -303,5 +307,4 @@ main(){
 }
 #}}}1
 
-echo $CLEANCREATE
 main $TEMPLATE $NOGRAPHICS $NOLOGOS $NO3D false $SWITCHTYPE
