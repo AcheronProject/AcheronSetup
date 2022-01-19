@@ -101,7 +101,7 @@ while :; do
 	# HANDLING OPTIONS -----------------------
 		# TEMPLATE ARGUMENT --------------
 		-t | --template)
-			if ["$2" ]; then
+			if [ "$2" ]; then
 				TEMPLATE=$2
 				shift
 			else
@@ -111,12 +111,9 @@ while :; do
 		--template=?*)
 			TEMPLATE=${1#*=} # Deletes everything up to "=" and assigns the remainder
 			;;
-		--template=)
-			echo "${BOLD}${RED} ERROR:${RESET} --template argument requires a string."
-			;;
 		# KICADDIR ARGUMENT --------------
 		-kd | --kicaddir)
-			if ["$2" ]; then
+			if [ "$2" ]; then
 				KICADDIR=$2
 				shift
 			else
@@ -131,7 +128,7 @@ while :; do
 			;;
 		# LIBDIR ARGUMENT ----------------
 		-ld | --libdir)
-			if ["$2" ]; then
+			if [ "$2" ]; then
 				LIBDIR=$2
 				shift
 			else
@@ -146,8 +143,9 @@ while :; do
 			;;
 		# LIBDIR ARGUMENT ----------------
 		-p | --projectname)
-			if ["$2" ]; then
-				PRJNAME= $2
+			if [ "$2" ]; then
+				PRJNAME="$2"
+				echo ${PRJNAME}
 				shift
 			else
 				echo "${BOLD}${RED} ERROR:${RESET} --projectname argument requires a string."
@@ -156,12 +154,9 @@ while :; do
 		--projectname=?*)
 			PRJNAME=${1#*=} # Deletes everything up to "=" and assigns the remainder
 			;;
-		--projectname=)
-			echo "${BOLD}${RED} ERROR:${RESET} --projectname argument requires a string."
-			;;
 		-s | --switchtype)
-			if ["$2" ]; then
-				SWITCHTYPE = $2
+			if [ "$2" ]; then
+				SWITCHTYPE=$2
 				shift
 			else
 				echo "${BOLD}${RED} ERROR:${RESET} --switchtype argument requires a string."
@@ -169,9 +164,6 @@ while :; do
 			;;
 		--switchtype=?*)
 			SWITCHTYPE=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		--switchtype=)
-			echo "${BOLD}${RED} ERROR:${RESET} --switchtype argument requires a string."
 			;;
 		*)
 			break

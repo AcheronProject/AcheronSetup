@@ -1,4 +1,4 @@
-(kicad_pcb (version 20210925) (generator pcbnew)
+(kicad_pcb (version 20211014) (generator pcbnew)
 
   (general
     (thickness 1.6)
@@ -797,10 +797,10 @@
     (fp_line (start -2.075002 1.05) (end -0.825002 1.05) (layer "F.SilkS") (width 0.2) (tstamp 622fd6ec-a8f0-497f-bbc1-4475cc0fc285))
     (fp_line (start -0.275 -0.5) (end -0.275002 0.5) (layer "F.SilkS") (width 0.2) (tstamp ba6838ce-b500-4d96-9337-2b55bcc349f1))
     (fp_line (start -2.075 -1.05) (end -0.825 -1.05) (layer "F.SilkS") (width 0.2) (tstamp da10f3a6-969a-4e7c-b484-1f42e293b898))
-    (fp_arc (start -0.825 -0.500002) (end -0.275 -0.5) (angle -90) (layer "F.SilkS") (width 0.2) (tstamp 55d5bcea-01d6-49ae-a493-5d8091512d8a))
-    (fp_arc (start -2.075002 0.500002) (end -2.625002 0.5) (angle -90) (layer "F.SilkS") (width 0.2) (tstamp ca0290e8-37fe-45a5-bae7-b781aff4afa3))
-    (fp_arc (start -0.825 0.5) (end -0.825002 1.05) (angle -90) (layer "F.SilkS") (width 0.2) (tstamp dc2b01dc-d675-4bdd-9825-8fd73421fdcd))
-    (fp_arc (start -2.075002 -0.5) (end -2.075 -1.05) (angle -90) (layer "F.SilkS") (width 0.2) (tstamp fc53285c-87c7-45f0-953e-5b29c4d6a69b))
+    (fp_arc (start -0.824998 -1.050002) (mid -0.43609 -0.888909) (end -0.275 -0.5) (layer "F.SilkS") (width 0.2) (tstamp 55d5bcea-01d6-49ae-a493-5d8091512d8a))
+    (fp_arc (start -2.075004 1.050002) (mid -2.463912 0.888909) (end -2.625002 0.5) (layer "F.SilkS") (width 0.2) (tstamp ca0290e8-37fe-45a5-bae7-b781aff4afa3))
+    (fp_arc (start -0.275 0.500002) (mid -0.436093 0.88891) (end -0.825002 1.05) (layer "F.SilkS") (width 0.2) (tstamp dc2b01dc-d675-4bdd-9825-8fd73421fdcd))
+    (fp_arc (start -2.625002 -0.500002) (mid -2.463909 -0.88891) (end -2.075 -1.05) (layer "F.SilkS") (width 0.2) (tstamp fc53285c-87c7-45f0-953e-5b29c4d6a69b))
     (fp_line (start -2.48 1.05) (end -2.48 -1.05) (layer "F.CrtYd") (width 0.05) (tstamp 45e20b61-ff00-4722-93f6-58d9169c1796))
     (fp_line (start -2.48 -1.05) (end 2.48 -1.05) (layer "F.CrtYd") (width 0.05) (tstamp 4dbe9a71-2225-4328-92b5-7199b0c8eaad))
     (fp_line (start 2.48 -1.05) (end 2.48 1.05) (layer "F.CrtYd") (width 0.05) (tstamp 90d79207-f2d6-4bf2-bd12-e7e4f6796e43))
