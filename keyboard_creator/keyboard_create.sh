@@ -4,14 +4,14 @@
 
 # ANSI terminal colors (see 'man tput') ----- {{{1
 # See 'man tput' and https://linuxtidbits.wordpress.com/2008/08/11/output-color-on-bash-scripts/. Don't use color if there isn't a $TERM environment variable.
-BOLD=`tput bold`
-RED=`tput setaf 1`
-GREEN=`tput setaf 2`
-YELLOW=`tput setaf 3`
-BLUE=`tput setaf 4`
-MAGENTA=`tput setaf 5`
-WHITE=`tput setaf 7`
-RESET=`tput sgr0`
+BOLD=$(tput bold)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+WHITE=$(tput setaf 7)
+RESET=$(tput sgr0)
 
 #}}}1
 
