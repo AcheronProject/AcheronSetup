@@ -23,9 +23,13 @@ readonly SED_COMMAND='/usr/bin/env sed'
 #}}}1
 
 # Default values -------------------------------------------------------------------------- {{{1
-LIBDIR='libraries'
-KICADDIR='kicad_files'
-ACRNPRJ_REPO='git@github.com:AcheronProject'
+readonly LIBDIR='libraries'
+readonly KICADDIR='kicad_files'
+readonly ACRNPRJ_REPO='git@github.com:AcheronProject'
+readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
+readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
+
+VERBOSE=0
 NOGRAPHICS=0
 NO3D=0
 NOLOGOS=0
@@ -36,10 +40,6 @@ PURGECLEAN=0
 SWITCHTYPE='MX'
 PRJNAME='project'
 TEMPLATE='BLANK'
-VERBOSE=0
-
-readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
-readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
 #}}}1
 
 # Printing function ------------------------------------------------------------------------------ {{{1
@@ -220,41 +220,6 @@ if [[ ! ${ALLOWED_TEMPLATES[*]} =~ (^|[[:space:]])"${TEMPLATE}"($|[[:space:]]) ]
 fi
 #}}}1
 
-# check function ---------------------------- {{{1
-# check is a function made to check if a folder exists. If not, creates that folder. The folder to be checked is signalled through the "TARGET_FOLDER" argument.
-# The function accepts a single obligatory option which can be two values: kicaddir and libdir, the former checking and creating ${KICADDIR} and the latter ${LIBDIR}. One interesting thing to note is that the LIBDIR check calls the mkdir command with a -p option, meaning that if adittionally ${KICADDIR} does not exist it will be created as well. This is because most of the time, check libdir will suffice.
-check() {
-	local TARGET_FOLDER="$1"
-
-	if [[ -z "${TARGET_FOLDER}" ]]; then
-		echo2stderr -e "${BOLD}${RED} >> ERROR:${WHITE} function check called with no argument passed.${RESET}"
-		return 0
-	fi
-
-	case "${TARGET_FOLDER}" in
-		libdir)
-			if [[ ! -d "${KICADDIR}/${LIBDIR}" ]]; then
-				echo2stdout -e "${BOLD}>> LIBDIR check: ${RED}Libraries directory at ${KICADDIR}/${LIBDIR} not found${WHITE}. Creating it...${RESET} \c"
-				${MKDIR_COMMAND} -p "${KICADDIR}/${LIBDIR}"
-				echo2stdout "${BOLD}${GREEN}Done.${RESET}"
-			fi
-			;;
-		kicaddir)
-			if [[ ! -d "${KICADDIR}" ]]; then
-				echo2stdout -e "${BOLD}>> KICADDIR check: ${RED}KiCAD directory at ${KICADDIR} not found${WHITE}. Creating it...${RESET} \c" ;
-				${MKDIR_COMMAND} -p "${KICADDIR}";
-				echo2stdout " ${BOLD}${GREEN}Done.${RESET}" ;
-			fi
-			;;
-		*)
-			echo2stderr -e "${BOLD}${YELLOW} >> WARNING:${WHITE} check() function called with unrecognized argument.${RESET}"
-			return 0
-	esac
-
-	return 1
-}
-#}}}1
-#
 # kicad_setup function ---------------------- {{{1
 # kicad_setup is a function that checks if kicaddir exists; if not, creates it; then copies the files in joker_template to kicaddir and adds symbol and footprint library tables.
 # This function takes one argument: "TEMPLATE_NAME", which can be "blank", "joker48" or "joker64" pertaining to each available template.
@@ -285,19 +250,25 @@ kicad_setup() {
 			return 0
 	esac
 
-	check libdir
-	rc=$?
-
-	if [[ ${rc} -ne 0 ]]; then
-		${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pro" "${KICADDIR}/${PRJNAME}.kicad_pro"
-		${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pcb" "${KICADDIR}/${PRJNAME}.kicad_pcb"
-		${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_prl" "${KICADDIR}/${PRJNAME}.kicad_prl"
-		${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_sch" "${KICADDIR}/${PRJNAME}.kicad_sch"
-		${CP_COMMAND} "${TEMPLATE_DIR}/sym-lib-table" "${KICADDIR}/sym-lib-table"
-		${CP_COMMAND} "${TEMPLATE_DIR}/fp-lib-table" "${KICADDIR}/fp-lib-table"
+	if [[ ! -d "${KICADDIR}" ]]; then
+		echo2stdout -e "${BOLD}${RED}>> KiCAD directory at ${KICADDIR} not found, Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating them...${RESET} \c"
+		${MKDIR_COMMAND} -p "${KICADDIR}/${LIBDIR}"
+		echo2stdout " ${BOLD}${GREEN}Done.${RESET}"
+	elif [[ ! -d "${KICADDIR}/${LIBDIR}" ]]; then
+		echo2stdout -e "${BOLD}${GREEN}>> KiCAD directory found at ${KICADDIR}.${RESET}" ;
+		echo2stdout -e "${BOLD}${RED}>> Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating it...${RESET} \c"
+		${MKDIR_COMMAND} "${KICADDIR}/${LIBDIR}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
-	return ${rc}
+	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pro" "${KICADDIR}/${PRJNAME}.kicad_pro"
+	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pcb" "${KICADDIR}/${PRJNAME}.kicad_pcb"
+	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_prl" "${KICADDIR}/${PRJNAME}.kicad_prl"
+	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_sch" "${KICADDIR}/${PRJNAME}.kicad_sch"
+	${CP_COMMAND} "${TEMPLATE_DIR}/sym-lib-table" "${KICADDIR}/sym-lib-table"
+	${CP_COMMAND} "${TEMPLATE_DIR}/fp-lib-table" "${KICADDIR}/fp-lib-table"
+
+	return 1
 }
 #}}}1
 
@@ -338,7 +309,7 @@ add_symlib() {
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
-		${SED_COMMAND} -i '' -e "2i\\
+		${SED_COMMAND} -i -e "2i\\
 (lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}\/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))
 " "${KICADDIR}/sym-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
@@ -357,7 +328,7 @@ add_footprintlib(){
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
-		${SED_COMMAND} -i '' -e "2i\\
+		${SED_COMMAND} -i -e "2i\\
 (lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
