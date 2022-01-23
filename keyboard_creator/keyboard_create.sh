@@ -36,25 +36,30 @@ PURGECLEAN=0
 SWITCHTYPE='MX'
 PRJNAME='project'
 TEMPLATE='BLANK'
+VERBOSE=0
 
 readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
 readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
 #}}}1
 
 # Printing function ------------------------------------------------------------------------------ {{{1
-function echo_stdout() {
+function echo2stdout() {
 	echo $@ >&1
 }
 
-function echo_stderr() {
+function echo2stderr() {
 	echo $@ >&2
+}
+
+function verbose_logging() {
+	[[ "${VERBOSE}" -eq 1 ]] && echo2stdout "$@"
 }
 # }}}1
 
 # Usage function -------------------------------------------------------------------------------- {{{1
 # This function displays the usage section of the code/
 function usage() {
-	echo_stderr "${BOLD}ACHERON PROJECT KEYBOARD CREATOR TOOL ${RESET}
+	echo2stderr "${BOLD}ACHERON PROJECT KEYBOARD CREATOR TOOL ${RESET}
 ${BOLD}Created by:${RESET} Álvaro \"Gondolindrim\" Volpato
 ${BOLD}Link:${RESET} https://acheronproject.com/acheron_setup/acheron_setup/
 ${BOLD}Version:${RESET} 1.0 (november 4, 2021)
@@ -62,6 +67,7 @@ ${BOLD}Description: ${RESET}The Acheron Keyboard Creator tool is a bash-script t
 ${BOLD}Usage: $0 [options] [arguments] (Note: ${GREEN}green${WHITE} values signal default values. Options and arguments are case-sensitive.)
 ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-h,  --help]${RESET}		Displays this message and exists.
+	${BOLD}[-v,  --verbose]${RESET}		Enable verbose logging.
 	${BOLD}[-pc, --purgeclean]${RESET}	Deletes all generated files before execution (*.git folders and files and the KICADDIR), leaving only the original repository, and proceeds normal execution. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-cc, --cleancreate]${RESET}	Creates cleanly, removing all base files including this script, leaving only the final files. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-ng, --nographics]${RESET}	Do not include graphics library submodule. ${BOLD}${GREEN}(F)${RESET}
@@ -77,7 +83,7 @@ ${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
 	${BOLD}[-p,  --projectname]${RESET}	Do not include 3D models library submodule. ${BOLD}${GREEN}('project')${RESET}
 	${BOLD}[-kd, --kicaddir]${RESET}	Chooses the project parent folder name ${BOLD}${GREEN}('kicad_files')${RESET}
 	${BOLD}[-ld, --libdir]${RESET}		Chooses the folder inside KICADDIR where libraries and submodules are added. ${BOLD}${GREEN}('libraries')${RESET}
-	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD} Options are:
+	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD}Options are:
 						${GREEN}- 'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
 						- 'MX_soldermask' for MX support with covered front switches (https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
 						- 'MXA' for MX and Alps suport (https://github.com/AcheronProject/acheron_MXA.pretty)
@@ -93,6 +99,9 @@ while (( "$#" )); do
 		-h | --help)
 			usage
 			exit 0
+			;;
+		-v | --verbose)
+			VERBOSE=1
 			;;
 		-cc | --cleancreate)
 			CLEANCREATE=1
@@ -157,39 +166,57 @@ while (( "$#" )); do
 			SWITCHTYPE=${1#*=} # Deletes everything up to "=" and assigns the remainder
 			;;
 		*)
-			break
+			echo2stderr "${BOLD}${RED}>> WARN: ${RESET} Unknown argument '$1'. Ignoring..."
 	esac
 	shift
 done
 #}}}1
 
 # Check the correctness of the values read from stdin ----------------------------------------- {{{1
+verbose_logging "${BOLD}>> INFO:  ${GREEN}Verbose logging enabled${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}CLEANCREATE set to ${CLEANCREATE}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOLOGOS set to ${NOLOGOS}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOGRAPHICS set to ${NOGRAPHICS}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO3D set to ${NO3D}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_REPO set to ${NO_GIT_REPO}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_SUBMODULES set to ${NO_GIT_SUBMODULES}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PURGECLEAN set to ${PURGECLEAN}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}TEMPLATE set to ${TEMPLATE}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}KICADDIR set to ${KICADDIR}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}LIBDIR set to ${LIBDIR}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PRJNAME set to ${PRJNAME}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}SWITCHTYPE set to ${SWITCHTYPE}${RESET}"
+
 if [[ -z "${TEMPLATE}" ]]; then
-	echo_stderr "${BOLD}${RED} ERROR:${RESET} --template argument requires a non-empty string."
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -t/--template argument requires a non-empty string."
+	exit 1
 fi
 
 if [[ -z "${KICADDIR}" ]]; then
-	echo_stderr "${BOLD}${RED} ERROR:${RESET} --kicaddir argument requires a non-empty string."
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -kd/--kicaddir argument requires a non-empty string."
+	exit 2
 fi
 
 if [[ -z "${LIBDIR}" ]]; then
-	echo_stderr "${BOLD}${RED} ERROR:${RESET} --libdir argument requires a non-empty string."
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -ld/--libdir argument requires a non-empty string."
+	exit 3
 fi
 
 if [[ -z "${PRJNAME}" ]]; then
-	echo_stderr "${BOLD}${RED} ERROR:${RESET} --projectname requires a non-empty string."
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -p/--projectname requires a non-empty string."
+	exit 4
 fi
 #}}}1
 
 # Checking if the limited options are in the allowed values ----------------------------------- {{{1
 if [[ ! ${ALLOWED_SWITCHTYPES[*]} =~ (^|[[:space:]])"${SWITCHTYPE}"($|[[:space:]]) ]]; then
-	echo_stderr "${BOLD}${RED}>> ERROR:${WHITE} switch type option '${SWITCHTYPE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
-	exit 1
+	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} switch type option '${SWITCHTYPE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
+	exit 5
 fi
 
 if [[ ! ${ALLOWED_TEMPLATES[*]} =~ (^|[[:space:]])"${TEMPLATE}"($|[[:space:]]) ]]; then
-	echo_stderr "${BOLD}${RED}>> ERROR:${WHITE} template option '${TEMPLATE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
-	exit 2
+	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} template option '${TEMPLATE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
+	exit 6
 fi
 #}}}1
 
@@ -200,27 +227,27 @@ check() {
 	local TARGET_FOLDER="$1"
 
 	if [[ -z "${TARGET_FOLDER}" ]]; then
-		echo_stderr -e "${BOLD}${RED} >> ERROR:${WHITE} function check called with no argument passed.${RESET}"
+		echo2stderr -e "${BOLD}${RED} >> ERROR:${WHITE} function check called with no argument passed.${RESET}"
 		return 0
 	fi
 
 	case "${TARGET_FOLDER}" in
 		libdir)
 			if [[ ! -d "${KICADDIR}/${LIBDIR}" ]]; then
-				echo_stdout -e "${BOLD} >> LIBDIR check: ${RED}Libraries directory at ${KICADDIR}/${LIBDIR} not found${WHITE}. Creating it...${RESET} \c"
+				echo2stdout -e "${BOLD}>> LIBDIR check: ${RED}Libraries directory at ${KICADDIR}/${LIBDIR} not found${WHITE}. Creating it...${RESET} \c"
 				${MKDIR_COMMAND} -p "${KICADDIR}/${LIBDIR}"
-				echo_stdout "${BOLD}${GREEN}Done.${RESET}"
+				echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 			fi
 			;;
 		kicaddir)
 			if [[ ! -d "${KICADDIR}" ]]; then
-				echo_stdout -e "${BOLD} >> KICADDIR check: ${RED}KiCAD directory at ${KICADDIR} not found${WHITE}. Creating it...${RESET} \c" ;
+				echo2stdout -e "${BOLD}>> KICADDIR check: ${RED}KiCAD directory at ${KICADDIR} not found${WHITE}. Creating it...${RESET} \c" ;
 				${MKDIR_COMMAND} -p "${KICADDIR}";
-				echo_stdout " ${BOLD}${GREEN}Done.${RESET}" ;
+				echo2stdout " ${BOLD}${GREEN}Done.${RESET}" ;
 			fi
 			;;
 		*)
-			echo_stderr -e "${BOLD}${YELLOW} >> WARNING:${WHITE} check() function called with unrecognized argument.${RESET}"
+			echo2stderr -e "${BOLD}${YELLOW} >> WARNING:${WHITE} check() function called with unrecognized argument.${RESET}"
 			return 0
 	esac
 
@@ -238,7 +265,7 @@ kicad_setup() {
 	local rc=
 
 	if [[ -z "${TEMPLATE_NAME}" ]]; then
-		echo_stderr "${RED}${BOLD} >> ERROR${WHITE} on function kicad_setup:${RESET} no argument passed."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup:${RESET} no argument passed."
 		return 0
 	fi
 
@@ -254,7 +281,7 @@ kicad_setup() {
 			TEMPLATE_FILENAME='joker64'
 			;;
 		*)
-			echo_stderr "${RED}${BOLD} >> ERROR${WHITE} on function kicad_setup:${RESET} TEMPLATE_NAME option '${TEMPLATE_NAME}' unrecognized."
+			echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup:${RESET} TEMPLATE_NAME option '${TEMPLATE_NAME}' unrecognized."
 			return 0
 	esac
 
@@ -272,8 +299,6 @@ kicad_setup() {
 
 	return ${rc}
 }
-
-
 #}}}1
 
 # git "add" functions ----------------------- {{{1
@@ -283,22 +308,22 @@ add_library() {
 	local NO_GIT_SUBMODULES="$2"
 
 	if [[ -z "${TARGET_LIBRARY}" ]]; then
-		echo_stderr "${RED}${BOLD} >> ERROR${WHITE} on function add_submodule():${RESET} no argument passed."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_submodule():${RESET} no argument passed."
 		return 0
 	fi
 	if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
-		echo_stderr "${RED}${BOLD} >> ERROR${WHITE} on function add_submodule():${RESET} not enough arguments passed (2 required, only 1 passed)."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_submodule():${RESET} not enough arguments passed (2 required, only 1 passed)."
 		return 0
 	fi
 
 	if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
-		echo_stdout -e "${BOLD} >> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		${GIT_COMMAND} submodule add "${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
 	else
-		echo_stdout -e "${BOLD} >> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+		echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		${GIT_COMMAND} clone "${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
 	fi
-	echo_stdout "${BOLD}${GREEN}Done.${RESET}"
+	echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 
 	return 1
 }
@@ -312,11 +337,11 @@ add_symlib() {
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
-		echo_stdout -e "${BOLD} >> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
+		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
 		${SED_COMMAND} -i '' -e "2i\\
 (lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}\/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))
 " "${KICADDIR}/sym-lib-table" > /dev/null
-		echo_stdout "${BOLD}${GREEN}Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
 	return ${rc}
@@ -331,11 +356,11 @@ add_footprintlib(){
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
-		echo_stdout -e "${BOLD} >> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
+		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
 		${SED_COMMAND} -i '' -e "2i\\
 (lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
-		echo_stdout "${BOLD}${GREEN}Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
 	return ${rc}
@@ -345,17 +370,17 @@ add_footprintlib(){
 # clean() function: get the tool back to original state --------- {{{1
 # This function deletes all *.git files and folders, also the ${KICADDIR}.
 clean(){
-	echo_stdout -e "${YELLOW}${BOLD} >> CLEANING${WHITE} produced files... \c"
+	echo2stdout -e "${YELLOW}${BOLD}>> CLEANING${WHITE} produced files... \c"
 	${TRASH_COMMAND} .git .gitmodules "${KICADDIR}" > /dev/null 2>&1
-	echo_stdout -e "${BOLD}${GREEN}Done.${RESET}"
+	echo2stdout -e "${BOLD}${GREEN}Done.${RESET}"
 }
 #}}}1
 
 # MAIN FUNCTION ----------------------------- {{{1
 main(){
 	if [[ $# -eq 0 ]]; then
-		echo_stderr "${RED}${BOLD} >> ERROR${WHITE} on function main:${RESET} no argument passed."
-		exit 3
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function main:${RESET} no argument passed."
+		exit 7
 	fi
 
 	local TARGET_TEMPLATE="$1"
@@ -370,38 +395,40 @@ main(){
 
 	if [[ "${PURGECLEAN}" -eq 1 ]]; then clean; fi
 	if [[ "${NO_GIT_REPO}" -eq 0 ]]; then
-		echo_stdout -e "${BOLD}${GREEN}>>${WHITE} Initializing git repo... \c"
+		echo2stdout -e "${BOLD}${GREEN}>>${WHITE} Initializing git repo... \c"
 		${GIT_COMMAND} init > /dev/null 2>&1
 		${GIT_COMMAND} branch -M main
-		echo_stdout "${BOLD}${GREEN}Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
-	if kicad_setup "${TARGET_TEMPLATE}"; then exit 4; fi
+	if kicad_setup "${TARGET_TEMPLATE}"; then exit 8; fi
 
-	if add_symlib acheron_Symbols "${NO_GIT_SUBMODULE}"; then exit 5; fi
+	if add_symlib acheron_Symbols "${NO_GIT_SUBMODULE}"; then exit 9; fi
 
-	if add_footprintlib acheron_Components "${NO_GIT_SUBMODULE}"; then exit 6; fi
-	if add_footprintlib acheron_Connectors "${NO_GIT_SUBMODULE}"; then exit 7; fi
-	if add_footprintlib acheron_Hardware "${NO_GIT_SUBMODULE}"; then exit 8; fi
-	if add_footprintlib "acheron_${SWITCHTYPE}" "${NO_GIT_SUBMODULE}"; then exit 9; fi
+	if add_footprintlib acheron_Components "${NO_GIT_SUBMODULE}"; then exit 10; fi
+	if add_footprintlib acheron_Connectors "${NO_GIT_SUBMODULE}"; then exit 11; fi
+	if add_footprintlib acheron_Hardware "${NO_GIT_SUBMODULE}"; then exit 12; fi
+	if add_footprintlib "acheron_${SWITCHTYPE}" "${NO_GIT_SUBMODULE}"; then exit 13; fi
 
 	if [[ "${NOGRAPHICS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Graphics "${NO_GIT_SUBMODULE}"; then exit 10; fi
+		if add_footprintlib acheron_Graphics "${NO_GIT_SUBMODULE}"; then exit 14; fi
 	fi
 
 	if [[ "${NOLOGOS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Logo "${NO_GIT_SUBMODULE}"; then exit 10; fi
+		if add_footprintlib acheron_Logo "${NO_GIT_SUBMODULE}"; then exit 15; fi
 	fi
 
 	if [[ "${NO3D}" -eq 0 ]]; then
-		if add_footprintlib acheron_3D "${NO_GIT_SUBMODULE}"; then exit 11; fi
+		if add_footprintlib acheron_3D "${NO_GIT_SUBMODULE}"; then exit 16; fi
 	fi
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
-		echo_stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
+		echo2stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
 		${TRASH_COMMAND} keyboard_create.sh *_template
-		echo_stdout "${BOLD}${GREEN} Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN} Done.${RESET}"
 	fi
+
+	exit 0
 }
 #}}}1
 
