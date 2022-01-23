@@ -173,7 +173,7 @@ done
 #}}}1
 
 # Checking if the limited options are in the allowed values ----------------------------------- {{{1
-ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH) 
+ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
 if [[ ! ${ALLOWED_SWITCHTYPES[*]} =~ (^|[[:space:]])"${SWITCHTYPE}"($|[[:space:]]) ]]; then
 	echo "${BOLD}${RED}>> ERROR:${WHITE} switch type option '${SWITCHTYPE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
 	exit 1
@@ -203,12 +203,12 @@ check() {
 			echo "${BOLD}${GREEN}Done.${RESET}"
 		fi
 		return 1
-		;; 
+		;;
 	kicaddir)
-		if [ ! -d ${KICADDIR} ] ; then 
-			echo -e "${BOLD} >> KICADDIR check: ${RED}KiCAD directory at ${KICADDIR} not found${WHITE}. Creating it...${RESET} \c" ; 
-			mkdir -p ${KICADDIR}; 
-			echo " ${BOLD}${GREEN}Done.${RESET}" ; 
+		if [ ! -d ${KICADDIR} ] ; then
+			echo -e "${BOLD} >> KICADDIR check: ${RED}KiCAD directory at ${KICADDIR} not found${WHITE}. Creating it...${RESET} \c" ;
+			mkdir -p ${KICADDIR};
+			echo " ${BOLD}${GREEN}Done.${RESET}" ;
 		fi
 		return 1
 		;;
@@ -227,7 +227,7 @@ kicad_setup() {
 		echo "${RED}${BOLD} >> ERROR${WHITE} on function kicad_setup:${RESET} no argument passed."
 		return 0
 	fi
-	local TEMPLATE_NAME="$1" 
+	local TEMPLATE_NAME="$1"
 	local TEMPLATE_DIR='blank_template'
 	local TEMPLATE_FILENAME='blank'
 	case $TEMPLATE_NAME in
@@ -270,16 +270,16 @@ add_library() {
 		exit 0
 	fi
 	local TARGET_LIBRARY="$1"
-	local NO_GIT_SUBMODULES="$2" 
+	local NO_GIT_SUBMODULES="$2"
 	if [ "$NO_GIT_SUBMODULES" = 'false' ] ; then
-		echo -e "${BOLD} >> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c" 
+		echo -e "${BOLD} >> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		git submodule add ${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git ${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY} > /dev/null 2>&1
 	else
-		echo -e "${BOLD} >> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c" 
+		echo -e "${BOLD} >> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		git clone ${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git ${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY} > /dev/null 2>&1
 	fi
 	echo "${BOLD}${GREEN}Done.${RESET}"
-		
+
 }
 
 add_symlib() {
@@ -312,7 +312,7 @@ main(){
 		echo "${RED}${BOLD} >> ERROR${WHITE} on function main:${RESET} no argument passed."
 		exit 0
 	fi
-	local TARGET_TEMPLATE="$1" 
+	local TARGET_TEMPLATE="$1"
 	local NOGRAPHICS="$2"
 	local NOLOGOS="$3"
 	local NO3D="$4"
@@ -325,8 +325,8 @@ main(){
 	if [ "$NO_GIT_REPO" = 'false' ] ; then
 		echo -e "${BOLD}${GREEN}>>${WHITE} Initializing git repo... \c"
 		git init > /dev/null 2>&1
-		git branch -M main 
-		echo "${BOLD}${GREEN}Done.${RESET}" 
+		git branch -M main
+		echo "${BOLD}${GREEN}Done.${RESET}"
 	fi
 	kicad_setup $TARGET_TEMPLATE
 	add_symlib acheron_Symbols $NO_GIT_SUBMODULE
@@ -341,7 +341,7 @@ main(){
 		add_footprintlib acheron_Logo $NO_GIT_SUBMODULE
 	fi
 	if [ "$NO3D" = 'false' ] ; then
-		add_library acheron_3D $NO_GIT_SUBMODULE 
+		add_library acheron_3D $NO_GIT_SUBMODULE
 	fi
 	#echo ${LOCAL_CLEANCREATE}
 	if [  "$LOCAL_CLEANCREATE" = 'true' ] ; then
