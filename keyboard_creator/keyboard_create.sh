@@ -309,7 +309,7 @@ add_symlib() {
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
-		${SED_COMMAND} -i -e "2i\\
+		${SED_COMMAND} -i '' "2i\\
 (lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}\/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))
 " "${KICADDIR}/sym-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
@@ -328,7 +328,7 @@ add_footprintlib(){
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
-		${SED_COMMAND} -i -e "2i\\
+    ${SED_COMMAND} -i '' "2i\\
 (lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
