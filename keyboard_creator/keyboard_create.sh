@@ -351,7 +351,7 @@ add_footprintlib(){
 # This function deletes all *.git files and folders, also the ${KICADDIR}.
 clean(){
 	echo2stdout -e "${YELLOW}${BOLD}>> CLEANING${WHITE} produced files... \c"
-	${TRASH_COMMAND} .git .gitmodules "${KICADDIR}" > /dev/null 2>&1
+	${TRASH_COMMAND} ./.git ./.gitmodules ./"${KICADDIR}" > /dev/null 2>&1
 	echo2stdout -e "${BOLD}${GREEN}Done.${RESET}"
 }
 #}}}1
@@ -404,7 +404,7 @@ main(){
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
 		echo2stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
-		${TRASH_COMMAND} keyboard_create.sh *_template
+		${TRASH_COMMAND} ./keyboard_create.sh ./*_template > /dev/null 2>&1
 		echo2stdout "${BOLD}${GREEN} Done.${RESET}"
 	fi
 
