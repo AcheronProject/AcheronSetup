@@ -43,18 +43,18 @@ TEMPLATE='BLANK'
 #}}}1
 
 # Printing functions ----------------------------------------------------------------------------- {{{1
-function echo_line() {
+function echo_text() {
 	local text_to_print="${*:$#}"  # Assuming it's the last parameter
 	local echo_args="${*%"${!#}"}" # Assuming it's the rest
 	echo ${echo_args} "${text_to_print}" >&1
 }
 
 function echo2stdout() {
-	echo_line "$@" >&1
+	echo_text "$@" >&1
 }
 
 function echo2stderr() {
-	echo_line "$@" >&2
+	echo_text "$@" >&2
 }
 
 function verbose_logging() {
