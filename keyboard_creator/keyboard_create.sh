@@ -73,7 +73,7 @@ ${BOLD}Description: ${RESET}The Acheron Keyboard Creator tool is a bash-script t
 ${BOLD}Usage: $0 [options] [arguments] (Note: ${GREEN}green${WHITE} values signal default values. Options and arguments are case-sensitive.)
 ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-h,  --help]${RESET}		Displays this message and exists.
-	${BOLD}[-v,  --verbose]${RESET}		Enable verbose logging.
+	${BOLD}[-v,  --verbose]${RESET}	Enable verbose logging.
 	${BOLD}[-pc, --purgeclean]${RESET}	Deletes all generated files before execution (*.git folders and files and the KICADDIR), leaving only the original repository, and proceeds normal execution. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-cc, --cleancreate]${RESET}	Creates cleanly, removing all base files including this script, leaving only the final files. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-ng, --nographics]${RESET}	Do not include graphics library submodule. ${BOLD}${GREEN}(F)${RESET}
@@ -83,14 +83,14 @@ ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-ns, --nosubmodule]${RESET}	Do not add libraries as git submodules. (Note: if the --norepo flag is not passed, a git repository will still be initiated). ${BOLD}${GREEN}(F)${RESET}
 ${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
 	${BOLD}[-t,  --template]${RESET}	Choose what template to use. ${BOLD}Options are:
-						${GREEN}- BLANK${WHITE} for a blank PCB with pre-configured settings
-						- J48 for the 48-pin joker template
-						- J64 for the 64-pin joker template
+						${WHITE}- ${GREEN}'BLANK'${WHITE} for a blank PCB with pre-configured settings
+						- 'J48' for the 48-pin joker template
+						- 'J64' for the 64-pin joker template${RESET}
 	${BOLD}[-p,  --projectname]${RESET}	Do not include 3D models library submodule. ${BOLD}${GREEN}('project')${RESET}
 	${BOLD}[-kd, --kicaddir]${RESET}	Chooses the project parent folder name ${BOLD}${GREEN}('kicad_files')${RESET}
 	${BOLD}[-ld, --libdir]${RESET}		Chooses the folder inside KICADDIR where libraries and submodules are added. ${BOLD}${GREEN}('libraries')${RESET}
 	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD}Options are:
-						${GREEN}- 'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
+						${WHITE}- ${GREEN}'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
 						- 'MX_soldermask' for MX support with covered front switches (https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
 						- 'MXA' for MX and Alps suport (https://github.com/AcheronProject/acheron_MXA.pretty)
 						- 'MXH' for MX hostwap (https://github.com/AcheronProject/acheron_MXH.pretty)
