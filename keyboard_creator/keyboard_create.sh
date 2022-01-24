@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Defining the makefile commands
 # make <command>:<target>
 
