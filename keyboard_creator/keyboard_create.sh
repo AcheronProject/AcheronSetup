@@ -28,6 +28,7 @@ readonly KICADDIR='kicad_files'
 readonly ACRNPRJ_REPO='git@github.com:AcheronProject'
 readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
 readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
+readonly SED_BACKUP_EXT='.bak'
 
 VERBOSE=0
 NOGRAPHICS=0
@@ -315,9 +316,10 @@ add_symlib() {
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
-		${SED_COMMAND} -i'' -e "2i\\
+		${SED_COMMAND} -i${SED_BACKUP_EXT} -e "2i\\
 (lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}\/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))
 " "${KICADDIR}/sym-lib-table" > /dev/null
+		${TRASH_COMMAND} "${KICADDIR}/sym-lib-table${SED_BACKUP_EXT}"
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
@@ -334,9 +336,10 @@ add_footprintlib(){
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
-		${SED_COMMAND} -i'' -e "2i\\
+		${SED_COMMAND} -i${SED_BACKUP_EXT} -e "2i\\
 (lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
+		${TRASH_COMMAND} "${KICADDIR}/fp-lib-table${SED_BACKUP_EXT}"
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
