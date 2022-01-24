@@ -42,13 +42,19 @@ PRJNAME='project'
 TEMPLATE='BLANK'
 #}}}1
 
-# Printing function ------------------------------------------------------------------------------ {{{1
+# Printing functions ----------------------------------------------------------------------------- {{{1
+function echo_line() {
+	local text_to_print="${*:$#}"  # Assuming it's the last parameter
+	local echo_args="${*%"${!#}"}" # Assuming it's the rest
+	echo ${echo_args} "${text_to_print}" >&1
+}
+
 function echo2stdout() {
-	echo $@ >&1
+	echo_line "$@" >&1
 }
 
 function echo2stderr() {
-	echo $@ >&2
+	echo_line "$@" >&2
 }
 
 function verbose_logging() {
