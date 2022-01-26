@@ -325,7 +325,7 @@ add_symlib() {
 }
 
 add_footprintlib(){
-	local FOOTPRINTS_LIBRARY="$1.pretty"
+	local FOOTPRINTS_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
 	local rc=
 
@@ -335,7 +335,7 @@ add_footprintlib(){
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
 		${SED_COMMAND} -i'' -e "2i\\
-(lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project footprint library\"))
+(lib (name \"${FOOTPRINTS_LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
@@ -382,17 +382,17 @@ main(){
 
 	if add_symlib acheron_Symbols "${NO_GIT_SUBMODULE}"; then exit 9; fi
 
-	if add_footprintlib acheron_Components "${NO_GIT_SUBMODULE}"; then exit 10; fi
-	if add_footprintlib acheron_Connectors "${NO_GIT_SUBMODULE}"; then exit 11; fi
-	if add_footprintlib acheron_Hardware "${NO_GIT_SUBMODULE}"; then exit 12; fi
-	if add_footprintlib "acheron_${SWITCHTYPE}" "${NO_GIT_SUBMODULE}"; then exit 13; fi
+	if add_footprintlib acheron_Components.pretty "${NO_GIT_SUBMODULE}"; then exit 10; fi
+	if add_footprintlib acheron_Connectors.pretty "${NO_GIT_SUBMODULE}"; then exit 11; fi
+	if add_footprintlib acheron_Hardware.pretty "${NO_GIT_SUBMODULE}"; then exit 12; fi
+	if add_footprintlib "acheron_${SWITCHTYPE}.pretty" "${NO_GIT_SUBMODULE}"; then exit 13; fi
 
 	if [[ "${NOGRAPHICS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Graphics "${NO_GIT_SUBMODULE}"; then exit 14; fi
+		if add_footprintlib acheron_Graphics.pretty "${NO_GIT_SUBMODULE}"; then exit 14; fi
 	fi
 
 	if [[ "${NOLOGOS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Logo "${NO_GIT_SUBMODULE}"; then exit 15; fi
+		if add_footprintlib acheron_Logo.pretty "${NO_GIT_SUBMODULE}"; then exit 15; fi
 	fi
 
 	if [[ "${NO3D}" -eq 0 ]]; then
