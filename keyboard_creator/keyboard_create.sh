@@ -279,39 +279,39 @@ kicad_setup() {
 #}}}1
 
 # git "add" functions ----------------------- {{{1
-# The git_add_library function does exactly that: adds a library to the project. However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called. The other two functions, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
+# The git_add_library function does exactly that: adds a library to the project. However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called. The other function, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
 git_add_library() {
-    local TARGET_LIBRARY="$1"
-    local NO_GIT_SUBMODULES="$2"
-    local TARGET_LIBRARY_GIT_REPO_URL="${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git"
-    local rc=
+	local TARGET_LIBRARY="$1"
+	local NO_GIT_SUBMODULES="$2"
+	local TARGET_LIBRARY_GIT_REPO_URL="${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git"
+	local rc=
 
-    if [[ -z "${TARGET_LIBRARY}" ]]; then
-        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} no argument passed."
-        return 0
-    fi
-    if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
-        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} not enough arguments passed (2 required, only 1 passed)."
-        return 0
-    fi
+	if [[ -z "${TARGET_LIBRARY}" ]]; then
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} no argument passed."
+		return 0
+	fi
+	if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} not enough arguments passed (2 required, only 1 passed)."
+		return 0
+	fi
 
-     if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
-        echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-        ${GIT_COMMAND} submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-        rc=$?
-    else
-        echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-        ${GIT_COMMAND} clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-        rc=$?
-    fi
+	 if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
+		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+		${GIT_COMMAND} submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+		rc=$?
+	else
+		echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+		${GIT_COMMAND} clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+		rc=$?
+	fi
 
-    if [[ ${rc} -ne 0 ]]; then
-        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
-        return 0
-    fi
+	if [[ ${rc} -ne 0 ]]; then
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
+		return 0
+	fi
 
-    echo2stdout "${BOLD}${GREEN}Done.${RESET}"
-    return 1
+	echo2stdout "${BOLD}${GREEN}Done.${RESET}"
+	return 1
 }
 
 add_line_in_file() {
@@ -324,48 +324,48 @@ add_line_in_file() {
 	rc=$?  # rc = 0 if the perl command was successfully executed
 
 	if [[ ${rc} -ne 0 ]]; then
-		return 1
+		return 0
+	fi
+
+	return 1
+}
+
+add_library() {
+	local LIBRARY="$1"
+	local NO_GIT_SUBMODULES="$2"
+	local IS_FOOTPRINT=${3:-1} # Default is 0 => symbols library
+	local PATH_TO_LIBRARY=
+	local LIBRARY_TYPE=
+	local LIBRARY_TABLE_FILE_PATH=
+	local rc=
+
+	if [[ ${IS_FOOTPRINT} -eq 0 ]]; then
+		PATH_TO_LIBRARY="${LIBDIR}/${LIBRARY}/${LIBRARY}.kicad_sym"
+		LIBRARY_TYPE="symbol"
+		LIBRARY_TABLE_FILE_PATH="${KICADDIR}/sym-lib-table"
+	else
+		PATH_TO_LIBRARY="${LIBDIR}/${LIBRARY}"
+		LIBRARY_TYPE="footprint"
+		LIBRARY_TABLE_FILE_PATH="${KICADDIR}/fp-lib-table"
+	fi
+
+	local LINE="	(lib (name \"${LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${PATH_TO_LIBRARY}\")(options \"\")(descr \"Acheron Project ${LIBRARY_TYPE} library\"))"
+
+	git_add_library "${LIBRARY}" "${NO_GIT_SUBMODULES}"
+	rc=$?
+
+	if [[ ${rc} -eq 1 ]]; then
+		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${LIBRARY}${WHITE} ${LIBRARY_TYPE} library to KiCAD library table... \c"
+		add_line_in_file "${LINE}" "${LIBRARY_TABLE_FILE_PATH}"
+		rc=$?
+
+		if [[ ${rc} -eq 1 ]]; then
+			echo2stdout "${BOLD}${GREEN}Done.${RESET}"
+			return 1
+		fi
 	fi
 
 	return 0
-}
-
-add_symlib() {
-	local SYMBOLS_LIBRARY="$1"
-	local NO_GIT_SUBMODULES="$2"
-	local rc=
-	local LINE="	(lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))"
-	local TARGET_FILE="${KICADDIR}/sym-lib-table"
-
-	git_add_library "${SYMBOLS_LIBRARY}" "${NO_GIT_SUBMODULES}"
-	rc=$?
-
-	if [[ ${rc} -ne 0 ]]; then
-		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
-		add_line_in_file "${LINE}" "${TARGET_FILE}" 2
-		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
-	fi
-
-	return ${rc}
-}
-
-add_footprintlib(){
-	local FOOTPRINTS_LIBRARY="$1"
-	local NO_GIT_SUBMODULES="$2"
-	local rc=
-	local LINE="	(lib (name \"${FOOTPRINTS_LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project symbol library\"))"
-	local TARGET_FILE="${KICADDIR}/fp-lib-table"
-
-	git_add_library "${FOOTPRINTS_LIBRARY}" "${NO_GIT_SUBMODULES}"
-	rc=$?
-
-	if [[ ${rc} -ne 0 ]]; then
-		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
-		add_line_in_file "${LINE}" "${TARGET_FILE}" 2
-		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
-	fi
-
-	return ${rc}
 }
 #}}}1
 
@@ -405,23 +405,23 @@ main(){
 
 	if kicad_setup "${TARGET_TEMPLATE}"; then exit 8; fi
 
-	if add_symlib acheron_Symbols "${NO_GIT_SUBMODULE}"; then exit 9; fi
+	if add_library acheron_Symbols "${NO_GIT_SUBMODULE}" 0; then exit 9; fi
 
-	if add_footprintlib acheron_Components.pretty "${NO_GIT_SUBMODULE}"; then exit 10; fi
-	if add_footprintlib acheron_Connectors.pretty "${NO_GIT_SUBMODULE}"; then exit 11; fi
-	if add_footprintlib acheron_Hardware.pretty "${NO_GIT_SUBMODULE}"; then exit 12; fi
-	if add_footprintlib "acheron_${SWITCHTYPE}.pretty" "${NO_GIT_SUBMODULE}"; then exit 13; fi
+	if add_library acheron_Components.pretty "${NO_GIT_SUBMODULE}"; then exit 10; fi
+	if add_library acheron_Connectors.pretty "${NO_GIT_SUBMODULE}"; then exit 11; fi
+	if add_library acheron_Hardware.pretty "${NO_GIT_SUBMODULE}"; then exit 12; fi
+	if add_library "acheron_${SWITCHTYPE}.pretty" "${NO_GIT_SUBMODULE}" 1; then exit 13; fi
 
 	if [[ "${NOGRAPHICS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Graphics.pretty "${NO_GIT_SUBMODULE}"; then exit 14; fi
+		if add_library acheron_Graphics.pretty "${NO_GIT_SUBMODULE}"; then exit 14; fi
 	fi
 
 	if [[ "${NOLOGOS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Logos.pretty "${NO_GIT_SUBMODULE}"; then exit 15; fi
+		if add_library acheron_Logos.pretty "${NO_GIT_SUBMODULE}"; then exit 15; fi
 	fi
 
 	if [[ "${NO3D}" -eq 0 ]]; then
-		if add_footprintlib acheron_3D "${NO_GIT_SUBMODULE}"; then exit 16; fi
+		if add_library acheron_3D "${NO_GIT_SUBMODULE}"; then exit 16; fi
 	fi
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
