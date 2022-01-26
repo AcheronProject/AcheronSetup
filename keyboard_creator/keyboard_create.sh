@@ -4,14 +4,14 @@
 
 # ANSI terminal colors (see 'man tput') ----- {{{1
 # See 'man tput' and https://linuxtidbits.wordpress.com/2008/08/11/output-color-on-bash-scripts/. Don't use color if there isn't a $TERM environment variable.
-readonly BOLD=$(tput bold)
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly MAGENTA=$(tput setaf 5)
-readonly WHITE=$(tput setaf 7)
-readonly RESET=$(tput sgr0)
+BOLD=$(tput bold); readonly BOLD
+RED=$(tput setaf 1); readonly RED
+GREEN=$(tput setaf 2); readonly GREEN
+YELLOW=$(tput setaf 3); readonly YELLOW
+BLUE=$(tput setaf 4); readonly BLUE
+MAGENTA=$(tput setaf 5); readonly MAGENTA
+WHITE=$(tput setaf 7); readonly WHITE
+RESET=$(tput sgr0); readonly RESET
 #}}}1
 
 # Default commands ------------------------------------------------------------------------- {{{1
