@@ -30,6 +30,7 @@ readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
 readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
 
 VERBOSE=0
+OUTPUT_REDIRECTION='&>/dev/null'
 NOGRAPHICS=0
 NO3D=0
 NOLOGOS=0
@@ -108,6 +109,7 @@ while (( "$#" )); do
 			;;
 		-v | --verbose)
 			VERBOSE=1
+			OUTPUT_REDIRECTION=
 			;;
 		-cc | --cleancreate)
 			CLEANCREATE=1
@@ -180,6 +182,7 @@ done
 
 # Check the correctness of the values read from stdin ----------------------------------------- {{{1
 verbose_logging "${BOLD}>> INFO:  ${GREEN}Verbose logging enabled${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}OUTPUT_REDIRECTION set to ${OUTPUT_REDIRECTION}${RESET}"
 verbose_logging "${BOLD}>> DEBUG: ${YELLOW}CLEANCREATE set to ${CLEANCREATE}${RESET}"
 verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOLOGOS set to ${NOLOGOS}${RESET}"
 verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOGRAPHICS set to ${NOGRAPHICS}${RESET}"
@@ -235,7 +238,7 @@ kicad_setup() {
 	local TEMPLATE_FILENAME='blank'
 
 	if [[ -z "${TEMPLATE_NAME}" ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup:${RESET} no argument passed."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup():${RESET} no argument passed."
 		return 0
 	fi
 
@@ -251,27 +254,27 @@ kicad_setup() {
 			TEMPLATE_FILENAME='joker64'
 			;;
 		*)
-			echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup:${RESET} TEMPLATE_NAME option '${TEMPLATE_NAME}' unrecognized."
+			echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup():${RESET} TEMPLATE_NAME option '${TEMPLATE_NAME}' unrecognized."
 			return 0
 	esac
 
 	if [[ ! -d "${KICADDIR}" ]]; then
 		echo2stdout -e "${BOLD}${RED}>> KiCAD directory at ${KICADDIR} not found, Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating them...${RESET} \c"
-		${MKDIR_COMMAND} -p "${KICADDIR}/${LIBDIR}"
+		eval "${MKDIR_COMMAND}" -vp "${KICADDIR}/${LIBDIR}" "${OUTPUT_REDIRECTION}"
 		echo2stdout " ${BOLD}${GREEN}Done.${RESET}"
 	elif [[ ! -d "${KICADDIR}/${LIBDIR}" ]]; then
 		echo2stdout -e "${BOLD}${GREEN}>> KiCAD directory found at ${KICADDIR}.${RESET}" ;
 		echo2stdout -e "${BOLD}${RED}>> Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating it...${RESET} \c"
-		${MKDIR_COMMAND} "${KICADDIR}/${LIBDIR}"
+		eval "${MKDIR_COMMAND}" -v "${KICADDIR}/${LIBDIR}" "${OUTPUT_REDIRECTION}"
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
-	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pro" "${KICADDIR}/${PRJNAME}.kicad_pro"
-	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pcb" "${KICADDIR}/${PRJNAME}.kicad_pcb"
-	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_prl" "${KICADDIR}/${PRJNAME}.kicad_prl"
-	${CP_COMMAND} "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_sch" "${KICADDIR}/${PRJNAME}.kicad_sch"
-	${CP_COMMAND} "${TEMPLATE_DIR}/sym-lib-table" "${KICADDIR}/sym-lib-table"
-	${CP_COMMAND} "${TEMPLATE_DIR}/fp-lib-table" "${KICADDIR}/fp-lib-table"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pro" "${KICADDIR}/${PRJNAME}.kicad_pro" "${OUTPUT_REDIRECTION}"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_pcb" "${KICADDIR}/${PRJNAME}.kicad_pcb" "${OUTPUT_REDIRECTION}"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_prl" "${KICADDIR}/${PRJNAME}.kicad_prl" "${OUTPUT_REDIRECTION}"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/${TEMPLATE_FILENAME}.kicad_sch" "${KICADDIR}/${PRJNAME}.kicad_sch" "${OUTPUT_REDIRECTION}"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/sym-lib-table" "${KICADDIR}/sym-lib-table" "${OUTPUT_REDIRECTION}"
+	eval "${CP_COMMAND}" -v "${TEMPLATE_DIR}/fp-lib-table" "${KICADDIR}/fp-lib-table" "${OUTPUT_REDIRECTION}"
 
 	return 1
 }
@@ -296,11 +299,11 @@ git_add_library() {
 
 	 if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-		${GIT_COMMAND} submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+		eval "${GIT_COMMAND}" submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" "${OUTPUT_REDIRECTION}"
 		exit_code=$?
 	else
 		echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-		${GIT_COMMAND} clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+		eval "${GIT_COMMAND}" clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" "${OUTPUT_REDIRECTION}"
 		exit_code=$?
 	fi
 
@@ -320,7 +323,7 @@ add_line_in_file() {
 	local PERL_ARGS="-i -l -p -e"
 	local exit_code=
 
-	${PERL_COMMAND} ${PERL_ARGS} "print '${LINE}' if $. == ${LINE_NUMBER}" "${TARGET_FILE}" > /dev/null
+	eval "${PERL_COMMAND}" "${PERL_ARGS}" "'print '\''${LINE}'\'' if $. == ${LINE_NUMBER}'" "${TARGET_FILE}" "${OUTPUT_REDIRECTION}"
 	exit_code=$?  # exit_code = 0 if the perl command was successfully executed
 
 	if [[ ${exit_code} -ne 0 ]]; then
@@ -373,7 +376,7 @@ add_library() {
 # This function deletes all *.git files and folders, also the ${KICADDIR}.
 clean(){
 	echo2stdout -e "${YELLOW}${BOLD}>> CLEANING${WHITE} produced files... \c"
-	${RM_COMMAND} -rf ./.git ./.gitmodules "./${KICADDIR}" > /dev/null 2>&1
+	eval "${RM_COMMAND}" -rfv ./.git ./.gitmodules "./${KICADDIR}" "${OUTPUT_REDIRECTION}"
 	echo2stdout -e "${BOLD}${GREEN}Done.${RESET}"
 }
 #}}}1
@@ -398,8 +401,8 @@ main(){
 	if [[ "${PURGECLEAN}" -eq 1 ]]; then clean; fi
 	if [[ "${NO_GIT_REPO}" -eq 0 ]]; then
 		echo2stdout -e "${BOLD}${GREEN}>>${WHITE} Initializing git repo... \c"
-		${GIT_COMMAND} init > /dev/null 2>&1
-		${GIT_COMMAND} branch -M main
+		eval "${GIT_COMMAND}" init "${OUTPUT_REDIRECTION}"
+		eval "${GIT_COMMAND}" branch -M main "${OUTPUT_REDIRECTION}"
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
@@ -426,7 +429,7 @@ main(){
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
 		echo2stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
-		${RM_COMMAND} -rf ./keyboard_create.sh ./*_template > /dev/null 2>&1
+		eval "${RM_COMMAND}" -rfv ./keyboard_create.sh ./*_template "${OUTPUT_REDIRECTION}"
 		echo2stdout "${BOLD}${GREEN} Done.${RESET}"
 	fi
 
