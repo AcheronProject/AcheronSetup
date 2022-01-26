@@ -47,7 +47,7 @@ TEMPLATE='BLANK'
 function echo_text() {
 	local text_to_print="${*:$#}"  # Assuming it's the last parameter
 	local echo_args="${*%"${!#}"}" # Assuming it's the rest
-	echo ${echo_args} "${text_to_print}" >&1
+	echo ${echo_args} "${text_to_print}"
 }
 
 function echo2stdout() {
