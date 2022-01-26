@@ -392,7 +392,7 @@ main(){
 	fi
 
 	if [[ "${NOLOGOS}" -eq 0 ]]; then
-		if add_footprintlib acheron_Logo.pretty "${NO_GIT_SUBMODULE}"; then exit 15; fi
+		if add_footprintlib acheron_Logos.pretty "${NO_GIT_SUBMODULE}"; then exit 15; fi
 	fi
 
 	if [[ "${NO3D}" -eq 0 ]]; then
