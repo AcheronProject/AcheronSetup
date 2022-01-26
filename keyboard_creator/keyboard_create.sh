@@ -150,8 +150,9 @@ kicad_setup() {
 }
 #}}}1
 
-# git "add" functions ----------------------- {{{1
-# The git_add_library function does exactly that: adds a library to the project. However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called. The other function, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
+# git_add_library function ----------------------- {{{1
+# The git_add_library function does exactly that: adds a library to the project from a git repository.
+# However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called.
 git_add_library() {
 	local TARGET_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
@@ -185,7 +186,10 @@ git_add_library() {
 	echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	return 1
 }
+#}}}1
 
+# add_line_in_file function ----------------------- {{{1
+# This function inserts a line in a file at a specific line number using a Perl command
 add_line_in_file() {
 	local LINE="$1"
 	local TARGET_FILE="$2"
@@ -202,7 +206,11 @@ add_line_in_file() {
 
 	return 1
 }
+#}}}1
 
+# add_library function ----------------------- {{{1
+# This function calls the git_add_library and add_line_in_file functions. First, it adds the library from the the git repository, then depending on the IS_FOOTPRINT variable, it adds the library to KiCAD's library tables "sym-lib-table" and "fp-lib-table".
+# It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
 add_library() {
 	local LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
