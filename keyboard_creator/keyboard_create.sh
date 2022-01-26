@@ -15,11 +15,11 @@ RESET=$(tput sgr0); readonly RESET
 #}}}1
 
 # Default commands ------------------------------------------------------------------------- {{{1
-readonly TRASH_COMMAND='/usr/bin/env gio trash'
 readonly CP_COMMAND='/usr/bin/env cp'
 readonly GIT_COMMAND='/usr/bin/env git'
 readonly MKDIR_COMMAND='/usr/bin/env mkdir'
 readonly PERL_COMMAND='/usr/bin/env perl'
+readonly RM_COMMAND='/usr/bin/env rm'
 #}}}1
 
 # Default values -------------------------------------------------------------------------- {{{1
@@ -74,8 +74,8 @@ ${BOLD}Usage: $0 [options] [arguments] (Note: ${GREEN}green${WHITE} values signa
 ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-h,  --help]${RESET}		Displays this message and exists.
 	${BOLD}[-v,  --verbose]${RESET}	Enable verbose logging.
-	${BOLD}[-pc, --purgeclean]${RESET}	Deletes all generated files before execution (*.git folders and files and the KICADDIR), leaving only the original repository, and proceeds normal execution. ${BOLD}${GREEN}(F)${RESET}
-	${BOLD}[-cc, --cleancreate]${RESET}	Creates cleanly, removing all base files including this script, leaving only the final files. ${BOLD}${GREEN}(F)${RESET}
+	${BOLD}[-pc, --purgeclean]${RESET}	Deletes all generated files before execution (*.git folders and files and the KICADDIR), leaving only the original repository, and proceeds normal execution. ${BOLD}${RED} WARNING: deletions are definitive! ${GREEN}(F)${RESET}
+	${BOLD}[-cc, --cleancreate]${RESET}	Creates cleanly, removing all base files including this script, leaving only the final files. ${BOLD}${RED} WARNING: deletions are definitive! ${GREEN}(F)${RESET}
 	${BOLD}[-ng, --nographics]${RESET}	Do not include graphics library submodule. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-nl, --nologos]${RESET}	Do not include logos library submodule. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-n3, --no3d]${RESET}		Do not include 3D models library submodule. ${BOLD}${GREEN}(F)${RESET}
@@ -373,7 +373,7 @@ add_library() {
 # This function deletes all *.git files and folders, also the ${KICADDIR}.
 clean(){
 	echo2stdout -e "${YELLOW}${BOLD}>> CLEANING${WHITE} produced files... \c"
-	${TRASH_COMMAND} ./.git ./.gitmodules ./"${KICADDIR}" > /dev/null 2>&1
+	${RM_COMMAND} -rf ./.git ./.gitmodules "./${KICADDIR}" > /dev/null 2>&1
 	echo2stdout -e "${BOLD}${GREEN}Done.${RESET}"
 }
 #}}}1
@@ -426,7 +426,7 @@ main(){
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
 		echo2stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
-		${TRASH_COMMAND} ./keyboard_create.sh ./*_template > /dev/null 2>&1
+		${RM_COMMAND} -rf ./keyboard_create.sh ./*_template > /dev/null 2>&1
 		echo2stdout "${BOLD}${GREEN} Done.${RESET}"
 	fi
 
