@@ -335,7 +335,7 @@ add_footprintlib(){
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
 		${SED_COMMAND} -i'' -e "2i\\
-(lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}.pretty\")(options \"\")(descr \"Acheron Project footprint library\"))
+(lib (name \"${FOOTPRINTS_LIBRARY}\")(type \"KiCad\")(uri \"\\\$\{KIPRJMOD\}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project footprint library\"))
 " "${KICADDIR}/fp-lib-table" > /dev/null
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
