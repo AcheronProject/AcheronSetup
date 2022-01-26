@@ -318,9 +318,10 @@ add_line_in_file() {
 	local LINE="$1"
 	local TARGET_FILE="$2"
 	local LINE_NUMBER=${3:-2} # Default line number is 2
+	local PERL_ARGS="-i -l -p -e"
 	local rc=
 
-	${PERL_COMMAND} -i -l -p -e "print '${LINE}' if $. == ${LINE_NUMBER}" "${TARGET_FILE}" > /dev/null
+	${PERL_COMMAND} ${PERL_ARGS} "print '${LINE}' if $. == ${LINE_NUMBER}" "${TARGET_FILE}" > /dev/null
 	rc=$?  # rc = 0 if the perl command was successfully executed
 
 	if [[ ${rc} -ne 0 ]]; then
