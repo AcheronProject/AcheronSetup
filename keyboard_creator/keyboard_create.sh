@@ -314,17 +314,35 @@ git_add_library() {
     return 1
 }
 
+add_line_in_file() {
+	local LINE="$1"
+	local TARGET_FILE="$2"
+	local LINE_NUMBER=${3:-2} # Default line number is 2
+	local rc=
+
+	${PERL_COMMAND} -i -l -p -e "print '${LINE}' if $. == ${LINE_NUMBER}" "${TARGET_FILE}" > /dev/null
+	rc=$?  # rc = 0 if the perl command was successfully executed
+
+	if [[ ${rc} -ne 0 ]]; then
+		return 1
+	fi
+
+	return 0
+}
+
 add_symlib() {
 	local SYMBOLS_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
 	local rc=
+	local LINE="	(lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))"
+	local TARGET_FILE="${KICADDIR}/sym-lib-table"
 
 	git_add_library "${SYMBOLS_LIBRARY}" "${NO_GIT_SUBMODULES}"
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${SYMBOLS_LIBRARY}${WHITE} symbol library to KiCAD library table... \c"
-		${PERL_COMMAND} -i -l -p -e "print '	(lib (name \"${SYMBOLS_LIBRARY}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${SYMBOLS_LIBRARY}/${SYMBOLS_LIBRARY}.kicad_sym\")(options \"\")(descr \"Acheron Project symbol library\"))' if $. == 2" "${KICADDIR}/sym-lib-table" > /dev/null
+		add_line_in_file "${LINE}" "${TARGET_FILE}" 2
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
@@ -335,13 +353,15 @@ add_footprintlib(){
 	local FOOTPRINTS_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
 	local rc=
+	local LINE="	(lib (name \"${FOOTPRINTS_LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project symbol library\"))"
+	local TARGET_FILE="${KICADDIR}/fp-lib-table"
 
 	git_add_library "${FOOTPRINTS_LIBRARY}" "${NO_GIT_SUBMODULES}"
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${FOOTPRINTS_LIBRARY}${WHITE} footprint library to KiCAD library table... \c"
-		${PERL_COMMAND} -i -l -p -e "print '	(lib (name \"${FOOTPRINTS_LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${LIBDIR}/${FOOTPRINTS_LIBRARY}\")(options \"\")(descr \"Acheron Project symbol library\"))' if $. == 2" "${KICADDIR}/fp-lib-table" > /dev/null
+		add_line_in_file "${LINE}" "${TARGET_FILE}" 2
 		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
