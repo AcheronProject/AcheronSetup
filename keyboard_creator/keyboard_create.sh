@@ -233,7 +233,6 @@ kicad_setup() {
 	local TEMPLATE_NAME="$1"
 	local TEMPLATE_DIR='blank_template'
 	local TEMPLATE_FILENAME='blank'
-	local rc=
 
 	if [[ -z "${TEMPLATE_NAME}" ]]; then
 		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function kicad_setup:${RESET} no argument passed."
@@ -284,7 +283,7 @@ git_add_library() {
 	local TARGET_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
 	local TARGET_LIBRARY_GIT_REPO_URL="${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git"
-	local rc=
+	local exit_code=
 
 	if [[ -z "${TARGET_LIBRARY}" ]]; then
 		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} no argument passed."
@@ -298,14 +297,14 @@ git_add_library() {
 	 if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		${GIT_COMMAND} submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-		rc=$?
+		exit_code=$?
 	else
 		echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		${GIT_COMMAND} clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-		rc=$?
+		exit_code=$?
 	fi
 
-	if [[ ${rc} -ne 0 ]]; then
+	if [[ ${exit_code} -ne 0 ]]; then
 		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
 		return 0
 	fi
@@ -319,12 +318,12 @@ add_line_in_file() {
 	local TARGET_FILE="$2"
 	local LINE_NUMBER=${3:-2} # Default line number is 2
 	local PERL_ARGS="-i -l -p -e"
-	local rc=
+	local exit_code=
 
 	${PERL_COMMAND} ${PERL_ARGS} "print '${LINE}' if $. == ${LINE_NUMBER}" "${TARGET_FILE}" > /dev/null
-	rc=$?  # rc = 0 if the perl command was successfully executed
+	exit_code=$?  # exit_code = 0 if the perl command was successfully executed
 
-	if [[ ${rc} -ne 0 ]]; then
+	if [[ ${exit_code} -ne 0 ]]; then
 		return 0
 	fi
 
@@ -338,7 +337,7 @@ add_library() {
 	local PATH_TO_LIBRARY=
 	local LIBRARY_TYPE=
 	local LIBRARY_TABLE_FILE_PATH=
-	local rc=
+	local return_code=
 
 	if [[ ${IS_FOOTPRINT} -eq 0 ]]; then
 		PATH_TO_LIBRARY="${LIBDIR}/${LIBRARY}/${LIBRARY}.kicad_sym"
@@ -353,14 +352,14 @@ add_library() {
 	local LINE="	(lib (name \"${LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${PATH_TO_LIBRARY}\")(options \"\")(descr \"Acheron Project ${LIBRARY_TYPE} library\"))"
 
 	git_add_library "${LIBRARY}" "${NO_GIT_SUBMODULES}"
-	rc=$?
+	return_code=$?
 
-	if [[ ${rc} -eq 1 ]]; then
+	if [[ ${return_code} -eq 1 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${LIBRARY}${WHITE} ${LIBRARY_TYPE} library to KiCAD library table... \c"
 		add_line_in_file "${LINE}" "${LIBRARY_TABLE_FILE_PATH}"
-		rc=$?
+		return_code=$?
 
-		if [[ ${rc} -eq 1 ]]; then
+		if [[ ${return_code} -eq 1 ]]; then
 			echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 			return 1
 		fi
