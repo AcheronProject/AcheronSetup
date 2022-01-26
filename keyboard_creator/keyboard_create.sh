@@ -279,30 +279,39 @@ kicad_setup() {
 #}}}1
 
 # git "add" functions ----------------------- {{{1
-# The add_library function does exactly that: adds a library to the project. However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called. The other two functions, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
-add_library() {
-	local TARGET_LIBRARY="$1"
-	local NO_GIT_SUBMODULES="$2"
+# The git_add_library function does exactly that: adds a library to the project. However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called. The other two functions, add_symlib and add_footprint lib, are based on add_submodule. What they do, adittionally to adding a symbol or footprint library submodule, is also adding that library to KiCAD's library tables "sym-lib-table" and "fp-lib-table" throught the sed command. It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
+git_add_library() {
+    local TARGET_LIBRARY="$1"
+    local NO_GIT_SUBMODULES="$2"
+    local TARGET_LIBRARY_GIT_REPO_URL="${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git"
+    local rc=
 
-	if [[ -z "${TARGET_LIBRARY}" ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_submodule():${RESET} no argument passed."
-		return 0
-	fi
-	if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_submodule():${RESET} not enough arguments passed (2 required, only 1 passed)."
-		return 0
-	fi
+    if [[ -z "${TARGET_LIBRARY}" ]]; then
+        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} no argument passed."
+        return 0
+    fi
+    if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
+        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} not enough arguments passed (2 required, only 1 passed)."
+        return 0
+    fi
 
-	if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
-		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-		${GIT_COMMAND} submodule add "${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-	else
-		echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
-		${GIT_COMMAND} clone "${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
-	fi
-	echo2stdout "${BOLD}${GREEN}Done.${RESET}"
+     if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
+        echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+        ${GIT_COMMAND} submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+        rc=$?
+    else
+        echo2stdout -e "${BOLD}>> Cloning ${MAGENTA}${TARGET_LIBRARY}${WHITE} library from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
+        ${GIT_COMMAND} clone "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" > /dev/null 2>&1
+        rc=$?
+    fi
 
-	return 1
+    if [[ ${rc} -ne 0 ]]; then
+        echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
+        return 0
+    fi
+
+    echo2stdout "${BOLD}${GREEN}Done.${RESET}"
+    return 1
 }
 
 add_symlib() {
@@ -310,7 +319,7 @@ add_symlib() {
 	local NO_GIT_SUBMODULES="$2"
 	local rc=
 
-	add_library "${SYMBOLS_LIBRARY}" "${NO_GIT_SUBMODULES}"
+	git_add_library "${SYMBOLS_LIBRARY}" "${NO_GIT_SUBMODULES}"
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
@@ -327,7 +336,7 @@ add_footprintlib(){
 	local NO_GIT_SUBMODULES="$2"
 	local rc=
 
-	add_library "${FOOTPRINTS_LIBRARY}" "${NO_GIT_SUBMODULES}"
+	git_add_library "${FOOTPRINTS_LIBRARY}" "${NO_GIT_SUBMODULES}"
 	rc=$?
 
 	if [[ ${rc} -ne 0 ]]; then
