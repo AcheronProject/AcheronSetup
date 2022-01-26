@@ -45,9 +45,9 @@ TEMPLATE='BLANK'
 
 # Printing functions ----------------------------------------------------------------------------- {{{1
 function echo_text() {
-	local text_to_print="${*:$#}"  # Assuming it's the last parameter
-	local echo_args="${*%"${!#}"}" # Assuming it's the rest
-	echo ${echo_args} "${text_to_print}"
+	local TEXT_TO_PRINT="${*:$#}"  # Assuming it's the last parameter
+	local ECHO_ARGS="${*%"${!#}"}" # Assuming it's the rest
+	echo ${ECHO_ARGS} "${TEXT_TO_PRINT}"
 }
 
 function echo2stdout() {
@@ -98,136 +98,6 @@ ${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
 ${RESET}"
 }
 # }}}1
-
-# Parsing options and arguments --------------------------------------------------------------- {{{1
-while (( "$#" )); do
-	case $1 in
-	# HANDLING ARGUMENTS ---------------------
-		-h | --help)
-			usage
-			exit 0
-			;;
-		-v | --verbose)
-			VERBOSE=1
-			OUTPUT_REDIRECTION=
-			;;
-		-cc | --cleancreate)
-			CLEANCREATE=1
-			;;
-		-nl | --nologos)
-			NOLOGOS=1
-			;;
-		-ng | --nographics)
-			NOGRAPHICS=1
-			;;
-		-n3 | --no3d)
-			NO3D=1
-			;;
-		-nr | --norepo)
-			NO_GIT_REPO=1
-			;;
-		-ns | --nosubmodule)
-			NO_GIT_SUBMODULES=1
-			;;
-		-pc | --purgeclean)
-			PURGECLEAN=1
-			;;
-	# HANDLING OPTIONS -----------------------
-		# TEMPLATE ARGUMENT --------------
-		-t | --template)
-			TEMPLATE="$2"
-			shift
-			;;
-		--template=?*)
-			TEMPLATE=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		# KICADDIR ARGUMENT --------------
-		-kd | --kicaddir)
-			KICADDIR="$2"
-			shift
-			;;
-		--kicaddir=?*)
-			KICADDIR=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		# LIBDIR ARGUMENT ----------------
-		-ld | --libdir)
-			LIBDIR="$2"
-			shift
-			;;
-		--libdir=?*)
-			LIBDIR=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		# PRJNAME ARGUMENT ----------------
-		-p | --projectname)
-			PRJNAME="$2"
-			shift
-			;;
-		--projectname=?*)
-			PRJNAME=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		# SWITCHTYPE ARGUMENT ----------------
-		-s | --switchtype)
-			SWITCHTYPE="$2"
-			shift
-			;;
-		--switchtype=?*)
-			SWITCHTYPE=${1#*=} # Deletes everything up to "=" and assigns the remainder
-			;;
-		*)
-			echo2stderr "${BOLD}${RED}>> WARN: ${RESET} Unknown argument '$1'. Ignoring..."
-	esac
-	shift
-done
-#}}}1
-
-# Check the correctness of the values read from stdin ----------------------------------------- {{{1
-verbose_logging "${BOLD}>> INFO:  ${GREEN}Verbose logging enabled${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}OUTPUT_REDIRECTION set to ${OUTPUT_REDIRECTION}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}CLEANCREATE set to ${CLEANCREATE}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOLOGOS set to ${NOLOGOS}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOGRAPHICS set to ${NOGRAPHICS}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO3D set to ${NO3D}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_REPO set to ${NO_GIT_REPO}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_SUBMODULES set to ${NO_GIT_SUBMODULES}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PURGECLEAN set to ${PURGECLEAN}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}TEMPLATE set to ${TEMPLATE}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}KICADDIR set to ${KICADDIR}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}LIBDIR set to ${LIBDIR}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PRJNAME set to ${PRJNAME}${RESET}"
-verbose_logging "${BOLD}>> DEBUG: ${YELLOW}SWITCHTYPE set to ${SWITCHTYPE}${RESET}"
-
-if [[ -z "${TEMPLATE}" ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -t/--template argument requires a non-empty string."
-	exit 1
-fi
-
-if [[ -z "${KICADDIR}" ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -kd/--kicaddir argument requires a non-empty string."
-	exit 2
-fi
-
-if [[ -z "${LIBDIR}" ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -ld/--libdir argument requires a non-empty string."
-	exit 3
-fi
-
-if [[ -z "${PRJNAME}" ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -p/--projectname requires a non-empty string."
-	exit 4
-fi
-#}}}1
-
-# Checking if the limited options are in the allowed values ----------------------------------- {{{1
-if [[ ! ${ALLOWED_SWITCHTYPES[*]} =~ (^|[[:space:]])"${SWITCHTYPE}"($|[[:space:]]) ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} switch type option '${SWITCHTYPE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
-	exit 5
-fi
-
-if [[ ! ${ALLOWED_TEMPLATES[*]} =~ (^|[[:space:]])"${TEMPLATE}"($|[[:space:]]) ]]; then
-	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} template option '${TEMPLATE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
-	exit 6
-fi
-#}}}1
 
 # kicad_setup function ---------------------- {{{1
 # kicad_setup is a function that checks if kicaddir exists; if not, creates it; then copies the files in joker_template to kicaddir and adds symbol and footprint library tables.
@@ -435,6 +305,136 @@ main(){
 
 	exit 0
 }
+#}}}1
+
+# Parsing options and arguments --------------------------------------------------------------- {{{1
+while (( "$#" )); do
+	case $1 in
+	# HANDLING ARGUMENTS ---------------------
+		-h | --help)
+			usage
+			exit 0
+			;;
+		-v | --verbose)
+			VERBOSE=1
+			OUTPUT_REDIRECTION=
+			;;
+		-cc | --cleancreate)
+			CLEANCREATE=1
+			;;
+		-nl | --nologos)
+			NOLOGOS=1
+			;;
+		-ng | --nographics)
+			NOGRAPHICS=1
+			;;
+		-n3 | --no3d)
+			NO3D=1
+			;;
+		-nr | --norepo)
+			NO_GIT_REPO=1
+			;;
+		-ns | --nosubmodule)
+			NO_GIT_SUBMODULES=1
+			;;
+		-pc | --purgeclean)
+			PURGECLEAN=1
+			;;
+	# HANDLING OPTIONS -----------------------
+		# TEMPLATE ARGUMENT --------------
+		-t | --template)
+			TEMPLATE="$2"
+			shift
+			;;
+		--template=?*)
+			TEMPLATE=${1#*=} # Deletes everything up to "=" and assigns the remainder
+			;;
+		# KICADDIR ARGUMENT --------------
+		-kd | --kicaddir)
+			KICADDIR="$2"
+			shift
+			;;
+		--kicaddir=?*)
+			KICADDIR=${1#*=} # Deletes everything up to "=" and assigns the remainder
+			;;
+		# LIBDIR ARGUMENT ----------------
+		-ld | --libdir)
+			LIBDIR="$2"
+			shift
+			;;
+		--libdir=?*)
+			LIBDIR=${1#*=} # Deletes everything up to "=" and assigns the remainder
+			;;
+		# PRJNAME ARGUMENT ----------------
+		-p | --projectname)
+			PRJNAME="$2"
+			shift
+			;;
+		--projectname=?*)
+			PRJNAME=${1#*=} # Deletes everything up to "=" and assigns the remainder
+			;;
+		# SWITCHTYPE ARGUMENT ----------------
+		-s | --switchtype)
+			SWITCHTYPE="$2"
+			shift
+			;;
+		--switchtype=?*)
+			SWITCHTYPE=${1#*=} # Deletes everything up to "=" and assigns the remainder
+			;;
+		*)
+			echo2stderr "${BOLD}${RED}>> WARN: ${RESET} Unknown argument '$1'. Ignoring..."
+	esac
+	shift
+done
+#}}}1
+
+# Check the correctness of the values read from stdin ----------------------------------------- {{{1
+verbose_logging "${BOLD}>> INFO:  ${GREEN}Verbose logging enabled${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}OUTPUT_REDIRECTION set to ${OUTPUT_REDIRECTION}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}CLEANCREATE set to ${CLEANCREATE}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOLOGOS set to ${NOLOGOS}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NOGRAPHICS set to ${NOGRAPHICS}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO3D set to ${NO3D}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_REPO set to ${NO_GIT_REPO}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}NO_GIT_SUBMODULES set to ${NO_GIT_SUBMODULES}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PURGECLEAN set to ${PURGECLEAN}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}TEMPLATE set to ${TEMPLATE}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}KICADDIR set to ${KICADDIR}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}LIBDIR set to ${LIBDIR}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}PRJNAME set to ${PRJNAME}${RESET}"
+verbose_logging "${BOLD}>> DEBUG: ${YELLOW}SWITCHTYPE set to ${SWITCHTYPE}${RESET}"
+
+if [[ -z "${TEMPLATE}" ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -t/--template argument requires a non-empty string."
+	exit 1
+fi
+
+if [[ -z "${KICADDIR}" ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -kd/--kicaddir argument requires a non-empty string."
+	exit 2
+fi
+
+if [[ -z "${LIBDIR}" ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -ld/--libdir argument requires a non-empty string."
+	exit 3
+fi
+
+if [[ -z "${PRJNAME}" ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${RESET} -p/--projectname requires a non-empty string."
+	exit 4
+fi
+#}}}1
+
+# Checking if the limited options are in the allowed values ----------------------------------- {{{1
+if [[ ! ${ALLOWED_SWITCHTYPES[*]} =~ (^|[[:space:]])"${SWITCHTYPE}"($|[[:space:]]) ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} switch type option '${SWITCHTYPE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
+	exit 5
+fi
+
+if [[ ! ${ALLOWED_TEMPLATES[*]} =~ (^|[[:space:]])"${TEMPLATE}"($|[[:space:]]) ]]; then
+	echo2stderr "${BOLD}${RED}>> ERROR:${WHITE} template option '${TEMPLATE}' is not recognized. Run the script with the '-h' option for usage guidelines.${RESET}"
+	exit 6
+fi
 #}}}1
 
 main "${TEMPLATE}" "${NOGRAPHICS}" "${NOLOGOS}" "${NO3D}" "${CLEANCREATE}" "${NO_GIT_REPO}" "${NO_GIT_SUBMODULES}" "${PURGECLEAN}" "${SWITCHTYPE}"
