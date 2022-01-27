@@ -128,7 +128,7 @@ kicad_setup() {
 	if [[ ! -d "${KICADDIR}" ]]; then
 		echo2stdout -e "${BOLD}${RED}>> KiCAD directory at ${KICADDIR} not found, Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating them...${RESET} \c"
 		eval "${MKDIR_COMMAND}" -vp "${KICADDIR}/${LIBDIR}" "${OUTPUT_REDIRECTION}"
-		echo2stdout " ${BOLD}${GREEN}Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	elif [[ ! -d "${KICADDIR}/${LIBDIR}" ]]; then
 		echo2stdout -e "${BOLD}${GREEN}>> KiCAD directory found at ${KICADDIR}.${RESET}" ;
 		echo2stdout -e "${BOLD}${RED}>> Libraries directory at ${KICADDIR}/${LIBDIR} not found.${WHITE} Creating it...${RESET} \c"
@@ -305,7 +305,7 @@ main(){
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
 		echo2stdout -e "${BOLD}${YELLOW}>>${WHITE} Cleaning up... ${RESET}\c"
 		eval "${RM_COMMAND}" -rfv ./keyboard_create.sh ./*_template "${OUTPUT_REDIRECTION}"
-		echo2stdout "${BOLD}${GREEN} Done.${RESET}"
+		echo2stdout "${BOLD}${GREEN}Done.${RESET}"
 	fi
 
 	exit 0
