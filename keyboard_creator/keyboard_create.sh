@@ -44,20 +44,17 @@ TEMPLATE='BLANK'
 #}}}1
 
 # Printing functions ----------------------------------------------------------------------------- {{{1
-function echo_text() {
-	local TEXT_TO_PRINT="${*:$#}"  # Assuming it's the last parameter
-	local ECHO_ARGS="${*%"${!#}"}" # Assuming it's the rest
-	echo ${ECHO_ARGS} "${TEXT_TO_PRINT}"
-}
-
+# Prints to STDOUT
 function echo2stdout() {
-	echo_text "$@" >&1
+	echo "$@" >&1
 }
 
+# Prints to STDOUT
 function echo2stderr() {
-	echo_text "$@" >&2
+	echo "$@" >&2
 }
 
+# Prints to STDOUT if verbose mode is enabled
 function verbose_logging() {
 	[[ "${VERBOSE}" -eq 1 ]] && echo2stdout "$@"
 }
