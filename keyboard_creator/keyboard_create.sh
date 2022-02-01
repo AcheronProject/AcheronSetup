@@ -147,21 +147,21 @@ kicad_setup() {
 }
 #}}}1
 
-# git_add_library function ----------------------- {{{1
-# The git_add_library function does exactly that: adds a library to the project from a git repository.
+# add_git_library function ----------------------- {{{1
+# The add_git_library function does exactly that: adds a library to the project from a git repository.
 # However, this can be done in two ways: either as a git submodule or simply cloning the library from its repository; the behavior depends on the NO_GIT_SUBMODULES flag set when the script is called.
-git_add_library() {
+add_git_library() {
 	local TARGET_LIBRARY="$1"
 	local NO_GIT_SUBMODULES="$2"
 	local TARGET_LIBRARY_GIT_REPO_URL="${ACRNPRJ_REPO}/${TARGET_LIBRARY}.git"
 	local exit_code=
 
 	if [[ -z "${TARGET_LIBRARY}" ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} no argument passed."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_git_library():${RESET} no argument passed."
 		return 0
 	fi
 	if [[ -z "${NO_GIT_SUBMODULES}" ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} not enough arguments passed (2 required, only 1 passed)."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_git_library():${RESET} not enough arguments passed (2 required, only 1 passed)."
 		return 0
 	fi
 
@@ -176,7 +176,7 @@ git_add_library() {
 	fi
 
 	if [[ ${exit_code} -ne 0 ]]; then
-		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function git_add_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
+		echo2stderr "${RED}${BOLD}>> ERROR${WHITE} on function add_git_library():${RESET} an error occured when trying to clone ${TARGET_LIBRARY_GIT_REPO_URL}."
 		return 0
 	fi
 
@@ -206,7 +206,7 @@ add_line_in_file() {
 #}}}1
 
 # add_library function ----------------------- {{{1
-# This function calls the git_add_library and add_line_in_file functions. First, it adds the library from the the git repository, then depending on the IS_FOOTPRINT variable, it adds the library to KiCAD's library tables "sym-lib-table" and "fp-lib-table".
+# This function calls the add_git_library and add_line_in_file functions. First, it adds the library from the the git repository, then depending on the IS_FOOTPRINT variable, it adds the library to KiCAD's library tables "sym-lib-table" and "fp-lib-table".
 # It must be noted that these two files should not be created from scratch as they have a header and a footer; hence, the template folders contain unedited, blank version of these files.
 add_library() {
 	local LIBRARY="$1"
@@ -229,7 +229,7 @@ add_library() {
 
 	local LINE="	(lib (name \"${LIBRARY%.pretty}\")(type \"KiCad\")(uri \"\${KIPRJMOD}/${PATH_TO_LIBRARY}\")(options \"\")(descr \"Acheron Project ${LIBRARY_TYPE} library\"))"
 
-	git_add_library "${LIBRARY}" "${NO_GIT_SUBMODULES}"
+	add_git_library "${LIBRARY}" "${NO_GIT_SUBMODULES}"
 	return_code=$?
 
 	if [[ ${return_code} -eq 1 ]]; then
