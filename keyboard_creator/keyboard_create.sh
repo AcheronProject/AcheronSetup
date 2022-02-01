@@ -299,7 +299,7 @@ main(){
 	fi
 
 	if [[ "${NO3D}" -eq 0 ]]; then
-		if add_library acheron_3D "${NO_GIT_SUBMODULE}"; then exit 16; fi
+		if add_git_library acheron_3D "${NO_GIT_SUBMODULE}"; then exit 16; fi
 	fi
 
 	if [[ "${LOCAL_CLEANCREATE}" -eq 1 ]]; then
