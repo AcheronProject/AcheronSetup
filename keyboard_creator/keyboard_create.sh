@@ -165,7 +165,7 @@ add_git_library() {
 		return 0
 	fi
 
-	 if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
+	if [[ "${NO_GIT_SUBMODULES}" -eq 0 ]]; then
 		echo2stdout -e "${BOLD}>> Adding ${MAGENTA}${TARGET_LIBRARY}${WHITE} library as a submodule from ${BLUE}${BOLD}${TARGET_LIBRARY_GIT_REPO_URL}${RESET} at ${RED}${BOLD}\"${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}\"${RESET} folder... \c"
 		eval "${GIT_COMMAND}" submodule add "${TARGET_LIBRARY_GIT_REPO_URL}" "${KICADDIR}/${LIBDIR}/${TARGET_LIBRARY}" "${OUTPUT_REDIRECTION}"
 		exit_code=$?
