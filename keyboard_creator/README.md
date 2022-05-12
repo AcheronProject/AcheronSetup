@@ -6,59 +6,66 @@ This keyboard creator tool also encloses the tolerances and rules used for the A
 
 ## Introduction
 
-The Keyboard Creator is a GNU Makefile-based tool to create a KiCAD keyboard project. Its dependencies are git and the ssh to operate remote repositories in a GNU environment. This Makefile has been developed and tested in bash using GNU Makefile; no other platform or terminal was tested.
+The Acheron Keyboard Creator tool is a bash-script tool aimed at automating the process of creating a KiCAD PCB project for a keyboard PCB. The produced files are ready-to-use and can be edited and modified using the latest KiCAD nightly (november 4, 2021 or newer) and include configuration settings such as copper clearance and tolerance, soldermask clearance and minimum width aimed at being compatible across multiple factories. This script has been developed and tested in bash. It also functions in git bash; no other platform or terminal was tested.
+
+
+The joker templates are documented [here](http://acheronproject.com/multimcu_article/multimcu_article/). **BE SURE TO READ THIS DOCUMENTATION**. These templates will contain a microcontroller footprint with ancillary components that make the resulting PCB compatible with a myriad of microcontrollers.
 
 ## Usage
 
-Copy the contents of ```./core-files``` into a folder; open a terminal and change directory into that folder; then run ```make create```.
+Execute ```./keybaord\_create.sh \[options\] \[arguments\]```
 
 This will, in this order,
 
 - Initialize the root folder as a git repository and change the current repository name to `main`;
 - Create a folder ```kicad_files``` with:
- - A KiCAD project file ```project.kicad_pro```
- - A KiCAD PCB layout file ```project.kicad_pcb```
- - A KiCAD schematic file ```project.kicad_sch```
- - A KiCAD libraries backup file ```project.kicad_prl```
- - A symbol library table ```sym-lib-table```
- - A footprint library table ```fp-lib-table```
+    - A KiCAD project file ```project.kicad_pro```
+    - A KiCAD PCB layout file ```project.kicad_pcb```
+    - A KiCAD schematic file ```project.kicad_sch```
+    - A KiCAD libraries backup file ```project.kicad_prl```
+    - A symbol library table ```sym-lib-table```
+    - A footprint library table ```fp-lib-table```
 - Create a libraries folder ```./kicad_files/libraries``` folder where the following libraries will be added. Each library is automatically added to the respective library tables:
- - acheron_Symbols
- - acheron_Components.pretty
- - acheron_Connectors.pretty
- - acheron_Hardware.pretty
- - acheron_MX.pretty **(*)**
- - acheron_Graphics.pretty
- - acheron_Logos.pretty
+    - acheron_Symbols
+    - acheron_Components.pretty
+    - acheron_Connectors.pretty
+    - acheron_Hardware.pretty
+    - acheron_MX.pretty **(*)**
+    - acheron_Graphics.pretty
+    - acheron_Logos.pretty
 
 In the end the ```./kicad_files``` folder will contain a fully working KiCAD project with ready to use added libraries.
 
+## Arguments
+
+These are the required arguments for the script to execute. Defaults are found in parentheses after each
+
+- ```[-t, --template]``` Choose what template to use. ('BLANK')
+    - ```BLANK``` f or a blank PCB with pre-configured settings
+    - ```J48``` for the 48-pin joker template
+    - ```J64``` for teh 64-pin joker template
+- ```[-p, --projectname]``` Sets the names of the kicad project files ('project')
+- ```[-kd, --kicaddir]``` Choose the project parent folder name ('kicad_files')
+- ```[-ld, --libdir]``` Choose the folder inside KICADDIR where libraries and submodules are added. ('libraries')
+- ```[-s, --switchtype]``` Select what switch type library submodule to be added. ('MX')
+    - ```MX``` for [simple MX support](https://github.com/AcheronProject/acheron_MX.pretty)
+    - ```MX_soldermask``` for [MX support with covered front switches](https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
+    - ```MXA``` for [MX and Alps suport](https://github.com/AcheronProject/acheron_MXA.pretty)
+    - ```MXH``` for [MX hostwap](https://github.com/AcheronProject/acheron_MXH.pretty)
+
 ## Options
 
-Additionally, the ```create``` target also admits passing arguments in the commandline.
+Additionally, the following optional flags are available.
 
-- ```SWITCHTYPE=<type>``` is used to modify what switch type library you want to add, as long as it is a valid Acheron Library repository. The Makefile command attempts to add the library ```git@github.com:AcheronProject/acheron_<type>.pretty``` . It defaults to ```MX```, that is, the solderable MX-compatible switch library. Example usage: ```make create SWITCHTYPE=MX_SolderMask``` will instead add the library with solderable MX-comptible switches with soldermask covered front pads. As of april 2021 the available libraries are
- - Solderable MX-style switches:
-   - ```MX```: your run-of-the-mill MX-style solderable switches;
-   - ```MX_SolderMask```: soldermask-covered front pads (considered to be more aesthetic);
- - Hotswap MX-style switches using Kailh's CPG151101S11 socket:
-   - ```MXH```: the default manufacturer-recommended footprints;
-   - ```MXH_MetalRings```: metallic rings around the contact holes (considered to be more aesthetic);
-   - ```MXH_WaffleMount```: containing "waffle" pattern stress-relief vias on the SMD pads to make the sockets more robust and harder to break apart from the PCB;
- - Non-MX-style switches:
-   - ```MXA```: solderable MX and Alps-compatible footprints;
-   - ```Choc```: solderable Kailh Choc swithces;
-   - ```MX_SMK```: solderable MX and SMK-compatible footprints;
-   - ```Alps```
-
-- ```NOGRAPHICS=FALSE``` will prompt the script to also add the ```acheron_Graphics.pretty``` library with various graphics. The same for ```NOLOGOS=FALSE```. Both default to true.
-- ```PRJNAME=<name>``` is used to make the script name the files with the project name you want
-- ```KICADDIR``` and ```LIBDIR```: by default, the makefile will create a ```./kicad_files``` folder with the KiCAD files and library tables; inside this folder, there will be a ```libraries``` folder inside which the libraries will be added as submodules. ```make create KICADDIR=<dir1> LIBDIR=<dir2>``` will override that behavior.
-- ```CLEANCREATE=TRUE``` will delete ```Makefile``` and the ```blankproject```, leaving only the created files and the ```.git``` folder. This argument defaults to false, that is, leaving those files intact after the process.
-- ```3DLIB=TRUE``` will also download the ```acheron_3D``` library with the 3D step files used in the acheron project.
-- ```TEMPLATE=<name>``` will utilize one of the available templates. As of september 2021, there are two templates available:
-    - ```BLANK``` is the *blank* template, that is, a project with blank schematic and PCB layouts;
-    - ```JOKER``` is the multi-STM32-microcontroller design template developed [here](http://acheronproject.com/multimcu_article/multimcu_article/). **BE SURE TO READ THIS DOCUMENTATION**. This template will contain a microcontroller footprint with ancillary components that make the resulting PCB compatible with a myriad of microcontrollers.
+- ```[-h, --help]``` Displays a help message and exits.
+- ```[-v, --verbose]``` Enable verbose logging.
+- ```[-pc, --purgeclean]``` Deletes all generated files before execution (*.git folders and files and the KICADDIR), leaving only the original repository, and proceeds normal execution.  WARNING: deletions are definitive!
+- ```[-cc, --cleancreate]```  Creates cleanly, removing all base files including this script, leaving only the final files.  WARNING: deletions are definitive!
+- ```[-ng, --nographics]``` Do not include graphics library submodule.
+- ```[-nl, --nologos]``` Do not include logos library submodule.
+- ```[-n3, --no3d]``` Do not include 3D models library submodule.
+- ```[-nr, --norepo]```  Do not init a git repository.
+- ```[-ns, --nosubmodule]``` Do not add libraries as git submodules. (Note: if the --norepo flag is not passed, a git repository will still be initiated). 
 
 ## Design notes
 

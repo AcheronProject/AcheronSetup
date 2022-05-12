@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Defining the makefile commands
-# make <command>:<target>
+# Defining the keyboard creator script commands
+# execute  `./keyboard_create.sh -h` for more information
 
 # ANSI terminal colors (see 'man tput') ----- {{{1
 # See 'man tput' and https://linuxtidbits.wordpress.com/2008/08/11/output-color-on-bash-scripts/. Don't use color if there isn't a $TERM environment variable.
@@ -69,6 +69,19 @@ ${BOLD}Link:${RESET} https://acheronproject.com/acheron_setup/acheron_setup/
 ${BOLD}Version:${RESET} 1.0 (november 4, 2021)
 ${BOLD}Description: ${RESET}The Acheron Keyboard Creator tool is a bash-script tool aimed at automating the process of creating a KiCAD PCB project for a keyboard PCB. The produced files are ready-to-use and can be edited and modified using the latest KiCAD nightly (november 4, 2021 or newer) and include configuration settings such as copper clearance and tolerance, soldermask clearance and minimum width aimed at being compatible across multiple factories.
 ${BOLD}Usage: $0 [options] [arguments] (Note: ${GREEN}green${WHITE} values signal default values. Options and arguments are case-sensitive.)
+${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
+	${BOLD}[-t,  --template]${RESET}	Choose what template to use. ${BOLD}Options are:
+						${WHITE}- ${GREEN}'BLANK'${WHITE} for a blank PCB with pre-configured settings
+						- 'J48' for the 48-pin joker template
+						- 'J64' for the 64-pin joker template${RESET}
+	${BOLD}[-p,  --projectname]${RESET}	Sets the names of the kicad project files. ${BOLD}${GREEN}('project')${RESET}
+	${BOLD}[-kd, --kicaddir]${RESET}	Chooses the project parent folder name ${BOLD}${GREEN}('kicad_files')${RESET}
+	${BOLD}[-ld, --libdir]${RESET}		Chooses the folder inside KICADDIR where libraries and submodules are added. ${BOLD}${GREEN}('libraries')${RESET}
+	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD}Options are:
+						${WHITE}- ${GREEN}'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
+						- 'MX_soldermask' for MX support with covered front switches (https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
+						- 'MXA' for MX and Alps suport (https://github.com/AcheronProject/acheron_MXA.pretty)
+						- 'MXH' for MX hostwap (https://github.com/AcheronProject/acheron_MXH.pretty)
 ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-h,  --help]${RESET}		Displays this message and exists.
 	${BOLD}[-v,  --verbose]${RESET}	Enable verbose logging.
@@ -79,19 +92,6 @@ ${GREEN}>>${WHITE} Options:${RESET}
 	${BOLD}[-n3, --no3d]${RESET}		Do not include 3D models library submodule. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-nr, --norepo]${RESET}		Do not init a git repository. ${BOLD}${GREEN}(F)${RESET}
 	${BOLD}[-ns, --nosubmodule]${RESET}	Do not add libraries as git submodules. (Note: if the --norepo flag is not passed, a git repository will still be initiated). ${BOLD}${GREEN}(F)${RESET}
-${GREEN}>>${BOLD}${WHITE} Arguments:${RESET}
-	${BOLD}[-t,  --template]${RESET}	Choose what template to use. ${BOLD}Options are:
-						${WHITE}- ${GREEN}'BLANK'${WHITE} for a blank PCB with pre-configured settings
-						- 'J48' for the 48-pin joker template
-						- 'J64' for the 64-pin joker template${RESET}
-	${BOLD}[-p,  --projectname]${RESET}	Do not include 3D models library submodule. ${BOLD}${GREEN}('project')${RESET}
-	${BOLD}[-kd, --kicaddir]${RESET}	Chooses the project parent folder name ${BOLD}${GREEN}('kicad_files')${RESET}
-	${BOLD}[-ld, --libdir]${RESET}		Chooses the folder inside KICADDIR where libraries and submodules are added. ${BOLD}${GREEN}('libraries')${RESET}
-	${BOLD}[-s,  --switchtype]${RESET}	Select what switch type library submodule to be added. ${BOLD}Options are:
-						${WHITE}- ${GREEN}'MX'${WHITE} for simple MX support (https://github.com/AcheronProject/acheron_MX.pretty)
-						- 'MX_soldermask' for MX support with covered front switches (https://github.com/AcheronProject/acheron_MX_soldermask.pretty)
-						- 'MXA' for MX and Alps suport (https://github.com/AcheronProject/acheron_MXA.pretty)
-						- 'MXH' for MX hostwap (https://github.com/AcheronProject/acheron_MXH.pretty)
 ${RESET}"
 }
 # }}}1
