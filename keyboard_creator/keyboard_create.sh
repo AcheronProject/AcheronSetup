@@ -25,7 +25,7 @@ readonly RM_COMMAND='/usr/bin/env rm'
 # Default values -------------------------------------------------------------------------- {{{1
 readonly LIBDIR='libraries'
 readonly KICADDIR='kicad_files'
-readonly ACRNPRJ_REPO='git@github.com:AcheronProject'
+readonly ACRNPRJ_REPO='https://github.com/AcheronProject'
 readonly ALLOWED_SWITCHTYPES=(MX MX_soldermask MXA MXH)
 readonly ALLOWED_TEMPLATES=(BLANK J48 J64)
 
